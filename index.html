@@ -38,8 +38,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 // ────────────────────────────────────────────────────────────────
 //  CONFIG — replace with your new Supabase project's values
 // ────────────────────────────────────────────────────────────────
-const SUPABASE_URL = 'https://tjhpiadcobmiwudshiaa.supabase.co'
-const SUPABASE_KEY = 'sb_publishable_mfUBjie3YUEAAqmd6hzmnQ_XyUAqTp3'
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co'
+const SUPABASE_KEY = 'YOUR_PUBLISHABLE_ANON_KEY'
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 window.supabase = supabase
 
@@ -124,6 +124,7 @@ const state = {
 function esc(s){ if(s===null||s===undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') }
 function fmtDate(iso){ if(!iso) return ''; const d=new Date(iso); if(isNaN(d)) return ''; const now=new Date(); if(d.toDateString()===now.toDateString()) return 'Today '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); const days=Math.floor((now-d)/86400000); if(days===1) return 'Yesterday'; if(days>=2&&days<7) return days+' days ago'; return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) }
 function fmtDateOnly(iso){ if(!iso) return ''; const d=new Date(iso); if(isNaN(d)) return ''; return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) }
+function fmtDateTime(iso){ if(!iso) return ''; const d=new Date(iso); if(isNaN(d)) return ''; return d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) }
 function todayYMD(){ return new Date().toISOString().slice(0,10) }
 function stagePill(group,sub){ const s=STAGE_GROUP_STYLES[group]||{bg:'#F5F5F4',color:'#44403C',border:'#E7E5E4'}; const style='background:'+s.bg+';color:'+s.color+';border-color:'+s.border; return '<span class="stage-pill" style="'+style+'"><span style="opacity:0.6;margin-right:3px">'+esc(group||'')+'</span><span style="opacity:0.4;margin-right:3px">›</span>'+esc(sub||'')+'</span>' }
 function userById(id){ return state.users.find(u=>u.user_id===id) }
@@ -286,6 +287,25 @@ async function submitActivity(form){
 
 async function submitNewCandidate(form){
   if(state.saving) return
+  state.dupWarning=null
+  const dupEmail=(form.email?.value||'').trim()
+  const dupPhone=(form.contact_no?.value||'').trim()
+  // hard-block duplicates: refuse if this email OR phone already exists
+  if(dupEmail||dupPhone){
+    state.saving=true; render()
+    const conds=[]
+    if(dupEmail) conds.push('email.ilike.'+dupEmail.replace(/[(),]/g,''))
+    if(dupPhone) conds.push('contact_no.eq.'+dupPhone.replace(/[(),]/g,''))
+    const {data:dups}=await supabase.from('candidates').select('id,candidate_name,email,contact_no').or(conds.join(',')).limit(1)
+    if(dups&&dups.length){
+      const d=dups[0]
+      const why=(dupEmail&&d.email&&d.email.toLowerCase()===dupEmail.toLowerCase())?'email':'phone number'
+      state.saving=false
+      state.dupWarning={ id:d.id, name:d.candidate_name||('ID '+d.id), why }
+      flash('err','Candidate already exists (same '+why+')')
+      render(); return
+    }
+  }
   state.saving=true; render()
   const row={ created_by:state.session.user.id, recruiter_user_id:state.session.user.id, stage_group:'New', stage_sub:'Sourced' }
   CAND_FIELDS.forEach(f=>{ const v=form[f]?.value?.trim(); if(v) row[f]=v })
@@ -506,7 +526,7 @@ function renderCandidateFields(c,editable){
     + fieldRow('Reason for change',c.reason_for_change)
     + fieldRow('Source',[c.source_detail,c.source_type].filter(Boolean).join(' · '))
     + linkRow('Resume',c.resume_url)
-    + fieldRow('Sourced on',fmtDateOnly(c.created_at))
+    + fieldRow('Sourced on',fmtDateTime(c.created_at))
     + '</div>'
   return '<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200 flex items-center justify-between"><h2 class="text-sm font-semibold text-stone-900">Candidate details</h2>'+editBtn+'</header><div class="p-4">'+body+'</div></section>'
 }
@@ -514,13 +534,35 @@ function renderCandidateFields(c,editable){
 function selField(label,name,options,current,opts){ opts=opts||{}; const req=opts.required?' required':''; const star=opts.required?' <span class="text-rose-500">*</span>':''; const o='<option value="">— Select —</option>'+options.map(v=>'<option'+(current===v?' selected':'')+'>'+esc(v)+'</option>').join(''); return '<div class="'+(opts.colSpan||'')+'"><label class="block text-xs font-medium text-stone-600 mb-1">'+esc(label)+star+'</label><select name="'+name+'"'+req+' class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring">'+o+'</select></div>' }
 function inpField(label,name,value,opts){ opts=opts||{}; const req=opts.required?' required':''; const star=opts.required?' <span class="text-rose-500">*</span>':''; const type=opts.type||'text'; const list=opts.list?' list="'+opts.list+'"':''; const tag=type==='textarea'?'<textarea name="'+name+'" rows="2"'+req+' class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring">'+esc(value||'')+'</textarea>':'<input type="'+type+'" name="'+name+'"'+list+req+(value?' value="'+esc(value)+'"':'')+' class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring" autocomplete="off">'; return '<div class="'+(opts.colSpan||'')+'"><label class="block text-xs font-medium text-stone-600 mb-1">'+esc(label)+star+'</label>'+tag+'</div>' }
 
+function resumeField(d){
+  const cur=d.resume_url
+  let curHtml=''
+  if(cur){ const isLink=/^https?:/.test(cur); curHtml='<div class="text-xs text-stone-500 mb-1">On record: '+(isLink?'<a href="'+esc(cur)+'" target="_blank" rel="noopener" class="text-indigo-600 hover:underline">existing link \u2197</a>':'CV file uploaded')+' \u2014 upload a new file to replace it.</div>' }
+  return '<div class="md:col-span-2"><label class="block text-xs font-medium text-stone-600 mb-1">Resume / CV</label>'+curHtml
+    +'<input type="file" name="resume_file" accept=".pdf,.doc,.docx,.rtf,.txt,image/*" class="w-full text-sm text-stone-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-stone-200 rounded-md p-1.5">'
+    +'<input type="text" name="resume_url" value="'+esc(cur||'')+'" placeholder="\u2026or paste a link instead (optional)" class="w-full mt-2 text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring" autocomplete="off">'
+    +'</div>'
+}
+async function uploadResume(candidateId, file){
+  const ext=(file.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'')
+  const path=candidateId+'/cv_'+Date.now()+'.'+ext
+  const {error}=await supabase.storage.from('resumes').upload(path, file, {upsert:true, contentType:file.type||undefined})
+  if(error) throw error
+  return path
+}
+async function openResume(pathOrUrl){
+  if(/^https?:/.test(pathOrUrl)){ window.open(pathOrUrl,'_blank','noopener'); return }
+  const {data,error}=await supabase.storage.from('resumes').createSignedUrl(pathOrUrl, 120)
+  if(error){ flash('err','Could not open CV: '+error.message); return }
+  window.open(data.signedUrl,'_blank','noopener')
+}
 function candidateFormBody(d){
   const roleList='<datalist id="dl-roles">'+ROLES.map(r=>'<option value="'+esc(r)+'">').join('')+'</datalist>'
   const subDeptList='<datalist id="dl-subdept">'+SUB_DEPARTMENTS.map(s=>'<option value="'+esc(s)+'">').join('')+'</datalist>'
   return roleList+subDeptList
     + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Candidate</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-4">'+inpField('Full name','candidate_name',d.candidate_name,{required:true,colSpan:'md:col-span-1'})+inpField('Contact number','contact_no',d.contact_no,{type:'tel'})+inpField('Email','email',d.email,{type:'email'})+'</div></section>'
     + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Role applied for</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+selField('Department','department',DEPARTMENTS,d.department)+inpField('Sub-department','sub_department',d.sub_department,{list:'dl-subdept'})+inpField('Role','role',d.role,{list:'dl-roles',colSpan:'md:col-span-2'})+selField('Work mode','work_mode',WORK_MODES,d.work_mode)+'</div></section>'
-    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Background</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+inpField('Current / last company','current_company',d.current_company)+inpField('Total experience (yrs)','total_exp',d.total_exp,{type:'number'})+inpField('Current CTC','current_ctc',d.current_ctc,{type:'number'})+inpField('Expected CTC','expected_ctc',d.expected_ctc,{type:'number'})+selField('Notice period','notice_period',NOTICE_PERIODS,d.notice_period)+inpField('Current location','current_location',d.current_location)+inpField('Reason for change','reason_for_change',d.reason_for_change,{type:'textarea',colSpan:'md:col-span-2'})+inpField('Resume link','resume_url',d.resume_url,{colSpan:'md:col-span-2'})+'</div></section>'
+    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Background</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+inpField('Current / last company','current_company',d.current_company)+inpField('Total experience (yrs)','total_exp',d.total_exp,{type:'number'})+inpField('Current CTC','current_ctc',d.current_ctc,{type:'number'})+inpField('Expected CTC','expected_ctc',d.expected_ctc,{type:'number'})+selField('Notice period','notice_period',NOTICE_PERIODS,d.notice_period)+inpField('Current location','current_location',d.current_location)+inpField('Reason for change','reason_for_change',d.reason_for_change,{type:'textarea',colSpan:'md:col-span-2'})+resumeField(d)+'</div></section>'
     + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Sourcing</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+selField('Source','source_detail',SOURCE_DETAILS,d.source_detail)+'<div class="text-xs text-stone-400 self-end pb-2">Source type is set automatically from the source.</div></div></section>'
 }
 
@@ -528,7 +570,9 @@ function renderCandidateNew(){
   const d=state.newDraft||{}
   const hasDraft=Object.keys(d).some(k=>d[k])
   const draftBanner=hasDraft?'<div class="mb-4 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 flex items-center justify-between text-sm"><span class="text-amber-800">Draft restored.</span><button type="button" data-action="clear-draft" class="text-xs text-amber-600 hover:text-amber-900 font-medium">Clear</button></div>':''
-  return '<div class="mb-5"><h1 class="text-xl font-semibold tracking-tight text-stone-900">Add a candidate</h1><p class="text-sm text-stone-500 mt-0.5">You become the assigned recruiter once saved. Stage starts at New · Sourced.</p></div>'+draftBanner+'<form data-action="submit-new-candidate" class="space-y-6 max-w-4xl">'+candidateFormBody(d)+'<div class="flex items-center gap-3 sticky bottom-4 bg-white border border-stone-200 rounded-lg p-4 shadow-sm"><button type="submit"'+(state.saving?' disabled':'')+' class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-medium px-4 py-2 rounded-md">'+(state.saving?'Saving…':'Save candidate')+'</button><a href="#/candidates" class="text-sm text-stone-600 hover:text-stone-900">Cancel</a></div></form>'
+  const dw=state.dupWarning
+  const dupBanner=dw?'<div class="mb-4 bg-rose-50 border border-rose-200 rounded-lg px-4 py-3 flex items-center justify-between gap-3"><div class="text-sm text-rose-800"><span class="font-semibold">Candidate already exists</span> — the same '+esc(dw.why)+' is already in the database (<span class="font-medium">'+esc(dw.name)+'</span>). Duplicate entries aren\'t allowed.</div><a href="#/candidates/'+esc(dw.id)+'" class="shrink-0 text-xs font-medium bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-md">View existing →</a></div>':''
+  return '<div class="mb-5"><h1 class="text-xl font-semibold tracking-tight text-stone-900">Add a candidate</h1><p class="text-sm text-stone-500 mt-0.5">You become the assigned recruiter once saved. Stage starts at New · Sourced.</p></div>'+dupBanner+draftBanner+'<form data-action="submit-new-candidate" class="space-y-6 max-w-4xl">'+candidateFormBody(d)+'<div class="flex items-center gap-3 sticky bottom-4 bg-white border border-stone-200 rounded-lg p-4 shadow-sm"><button type="submit"'+(state.saving?' disabled':'')+' class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-medium px-4 py-2 rounded-md">'+(state.saving?'Saving…':'Save candidate')+'</button><a href="#/candidates" class="text-sm text-stone-600 hover:text-stone-900">Cancel</a></div></form>'
 }
 function renderCandidateEditForm(c){
   return '<form data-action="save-candidate-edits" class="space-y-6">'+candidateFormBody(c)+'<div class="flex items-center gap-3"><button type="submit"'+(state.saving?' disabled':'')+' class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-medium px-4 py-2 rounded-md">'+(state.saving?'Saving…':'Save changes')+'</button><button type="button" data-action="cancel-edit" class="text-sm text-stone-600 hover:text-stone-900">Cancel</button></div></form>'
@@ -745,7 +789,7 @@ async function handleRoute(){
   const hash=window.location.hash.slice(1)||'/'
   state.editingCandidate=false; state.auditLogOpen=false
   if(hash==='/'||hash==='/candidates'){ state.view='candidates-list'; render(); await loadCandidates(); render() }
-  else if(hash==='/candidates/new'){ state.view='candidate-new'; render() }
+  else if(hash==='/candidates/new'){ state.view='candidate-new'; state.dupWarning=null; render() }
   else if(hash.startsWith('/candidates/')){ const id=decodeURIComponent(hash.split('/')[2]); state.view='candidate-detail'; state.currentCandidate=null; state.activities=[]; state.auditLog=[]; state.interviews=[]; render(); await Promise.all([loadCandidate(id),loadActivities(id),loadInterviews(id)]); render() }
   else if(hash==='/next-actions'){ state.view='next-actions'; render(); await Promise.all([loadMyOverdueCount(),loadNextActions()]); render() }
   else if(hash==='/team'){ if(!isAdmin()){ window.location.hash='#/candidates'; return } state.view='team'; render(); await Promise.all([loadUsers(),loadCountsByRecruiter()]); render() }
