@@ -767,15 +767,13 @@ function renderReportsFilterBar(){
 function renderReports(){
   const d=state.reportsData
   const admin=isAdmin()
-  const hdr='<div class="mb-5 flex items-end justify-between flex-wrap gap-3"><div><h1 class="text-xl font-semibold tracking-tight text-stone-900">Reports</h1><p class="text-sm text-stone-500 mt-0.5">'+(admin?'Sourcing, pipeline, and recruiter analytics. Every view below respects the filters and date range.':'Recruiter leaderboard and sub-department breakdown.')+'</p></div><div class="flex items-end gap-2"><div><label class="block text-[10px] font-medium text-stone-500 uppercase tracking-wider mb-1">From</label><input type="date" value="'+esc(state.reportsFrom)+'" data-action="reports-from-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"></div><div><label class="block text-[10px] font-medium text-stone-500 uppercase tracking-wider mb-1">To</label><input type="date" value="'+esc(state.reportsTo)+'" data-action="reports-to-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"></div></div></div>'+renderReportsFilterBar()
+  const hdr='<div class="mb-5 flex items-end justify-between flex-wrap gap-3"><div><h1 class="text-xl font-semibold tracking-tight text-stone-900">Reports</h1><p class="text-sm text-stone-500 mt-0.5">'+(admin?'Sourcing, pipeline, and recruiter analytics. Every view below respects the filters and date range.':'Recruiter sourced counts and sub-department breakdown.')+'</p></div><div class="flex items-end gap-2"><div><label class="block text-[10px] font-medium text-stone-500 uppercase tracking-wider mb-1">From</label><input type="date" value="'+esc(state.reportsFrom)+'" data-action="reports-from-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"></div><div><label class="block text-[10px] font-medium text-stone-500 uppercase tracking-wider mb-1">To</label><input type="date" value="'+esc(state.reportsTo)+'" data-action="reports-to-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"></div></div></div>'+renderReportsFilterBar()
   if(!d) return hdr+'<div class="text-stone-500 text-sm">Loading reports…</div>'
   const card=(title,subtitle,body)=>'<section class="bg-white border border-stone-200 rounded-lg overflow-hidden mb-6"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">'+esc(title)+'</h2>'+(subtitle?'<p class="text-xs text-stone-500 mt-0.5">'+esc(subtitle)+'</p>':'')+'</header><div class="p-4">'+body+'</div></section>'
 
-  const rs=(d.recruiter_stats||[]).filter(u=>u&&(u.sourced||u.owned||u.offers||u.interviews)).sort((a,b)=>(b.sourced||0)-(a.sourced||0))
-  const rlRows=rs.length===0?'<tr><td colspan="6" class="text-center text-stone-400 py-8 text-sm">No recruiter activity yet.</td></tr>':rs.map(u=>'<tr class="border-b border-stone-100"><td class="py-3 px-4"><div class="flex items-center gap-2.5">'+avatar(u.user_id,'sm')+'<div><div class="text-sm font-medium text-stone-900">'+esc(u.full_name||'—')+'</div><div class="text-xs text-stone-500">'+esc(u.email)+'</div></div></div></td><td class="py-3 px-4 text-sm font-medium text-stone-900">'+(u.sourced||0)+'</td><td class="py-3 px-4 text-sm text-stone-700">'+(u.owned||0)+'</td><td class="py-3 px-4 text-sm text-stone-700">'+(u.interviews||0)+'</td><td class="py-3 px-4 text-sm font-medium text-emerald-700">'+(u.offers||0)+'</td><td class="py-3 px-4 text-sm '+((u.overdue||0)>0?'text-rose-600 font-medium':'text-stone-400')+'">'+(u.overdue||0)+'</td></tr>').join('')
-  const view3=card((admin?'3. ':'1. ')+'Recruiter leaderboard','Sourced counts within the range; the rest are live totals','<div class="overflow-x-auto"><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="py-2.5 px-4">Recruiter</th><th class="py-2.5 px-4">Sourced</th><th class="py-2.5 px-4">Owned</th><th class="py-2.5 px-4">Interviews</th><th class="py-2.5 px-4">Offers</th><th class="py-2.5 px-4">Overdue</th></tr></thead><tbody>'+rlRows+'</tbody></table></div>')
+  const viewRecruiterChart=card((admin?'2. ':'1. ')+'Recruiter sourced count','How many candidates each recruiter sourced within the selected date range and filters','<div style="position:relative; height:320px;"><canvas id="chart-recruiter-sourced"></canvas></div>')
 
-  if(!admin) return hdr+view3+renderGroupedSection(2)
+  if(!admin) return hdr+viewRecruiterChart+renderGroupedSection(2)
 
   const t=d.tiles||{}
   const tile=(label,value,sub,accent)=>'<div class="bg-white border border-stone-200 rounded-lg p-4"><div class="text-[10px] font-semibold uppercase tracking-wider text-stone-500">'+esc(label)+'</div><div class="text-2xl font-semibold mt-1 '+(accent||'text-stone-900')+'">'+(typeof value==='number'?value.toLocaleString():esc(value))+'</div>'+(sub?'<div class="text-[11px] text-stone-500 mt-1">'+esc(sub)+'</div>':'')+'</div>'
@@ -788,25 +786,15 @@ function renderReports(){
     + tile('Avg days to select',t.avg_days_to_select||0,'Sourced → offer')
     + '</div>'
 
-  const view1=card('1. Daily candidates sourced','New reach-outs added per day across the selected range','<div style="position:relative; height:260px;"><canvas id="chart-daily"></canvas></div>')
-  const view2=card('2. Hiring funnel','Where candidates sit across the pipeline','<div style="position:relative; height:300px;"><canvas id="chart-funnel"></canvas></div>')
-
-  const se=(d.source_effectiveness||[]).slice(0,20)
-  const seRows=se.length===0?'<tr><td colspan="4" class="text-center text-stone-400 py-8 text-sm">No data.</td></tr>':se.map(r=>{ const pct=r.pct||0; const w=Math.min(100,pct*3); return '<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(r.source)+'</td><td class="px-4 py-2 text-sm text-stone-700">'+r.total+'</td><td class="px-4 py-2 text-sm text-emerald-700 font-medium">'+r.offers+'</td><td class="px-4 py-2"><div class="flex items-center gap-2"><div class="w-24 h-2 bg-stone-100 rounded-full overflow-hidden"><div class="h-full bg-indigo-500" style="width:'+w+'%"></div></div><span class="text-sm font-medium text-stone-900">'+pct+'%</span></div></td></tr>' }).join('')
-  const view4=card('4. Source effectiveness','Which channels convert sourced candidates into offers','<div class="overflow-x-auto"><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Source</th><th class="px-4 py-2">Sourced</th><th class="px-4 py-2">Offers</th><th class="px-4 py-2">Conversion</th></tr></thead><tbody>'+seRows+'</tbody></table></div>')
-
-  const dep=(d.by_department||[]), rol=(d.by_role||[])
-  const depRows=dep.length===0?'<tr><td colspan="2" class="text-center text-stone-400 py-6 text-sm">No data.</td></tr>':dep.map(r=>'<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(r.department)+'</td><td class="px-4 py-2 text-sm font-medium text-stone-900">'+r.n+'</td></tr>').join('')
-  const rolRows=rol.length===0?'<tr><td colspan="2" class="text-center text-stone-400 py-6 text-sm">No data.</td></tr>':rol.map(r=>'<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(r.role)+'</td><td class="px-4 py-2 text-sm font-medium text-stone-900">'+r.n+'</td></tr>').join('')
-  const view5=card('5. Open pipeline by demand','Where hiring is concentrated','<div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div><div class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">By department</div><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Department</th><th class="px-4 py-2">Active</th></tr></thead><tbody>'+depRows+'</tbody></table></div><div><div class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Top roles</div><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Role</th><th class="px-4 py-2">Active</th></tr></thead><tbody>'+rolRows+'</tbody></table></div></div>')
+  const view1=card('1. Hiring funnel','Where candidates sit across the pipeline','<div style="position:relative; height:300px;"><canvas id="chart-funnel"></canvas></div>')
 
   const rr=(d.reject_reasons||[])
   const byReason={}
   rr.forEach(x=>{ const k=x.reason||'Unspecified'; byReason[k]=(byReason[k]||0)+(x.n||0) })
   const reasonRows=Object.keys(byReason).length===0?'<tr><td colspan="2" class="text-center text-stone-400 py-6 text-sm">No rejections logged.</td></tr>':Object.entries(byReason).sort((a,b)=>b[1]-a[1]).map(([k,v])=>'<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(k)+'</td><td class="px-4 py-2 text-sm font-medium text-stone-900">'+v+'</td></tr>').join('')
-  const view6=card('6. Why candidates fall out','Reject / drop reasons across all rounds','<table class="w-full max-w-lg"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Reason</th><th class="px-4 py-2">Count</th></tr></thead><tbody>'+reasonRows+'</tbody></table>')
+  const view3=card('3. Why candidates fall out','Reject / drop reasons across all rounds','<table class="w-full max-w-lg"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Reason</th><th class="px-4 py-2">Count</th></tr></thead><tbody>'+reasonRows+'</tbody></table>')
 
-  return hdr+tiles+view1+view2+view3+view4+view5+view6+renderPivot()+renderGroupedSection(8)
+  return hdr+tiles+view1+viewRecruiterChart+view3+renderPivot()+renderGroupedSection(5)
 }
 
 function destroyCharts(){ for(const k in state.chartInstances){ try{ state.chartInstances[k].destroy() }catch(e){} } state.chartInstances={} }
@@ -815,16 +803,13 @@ if(window.ChartDataLabels&&window.Chart){ try{ Chart.register(ChartDataLabels) }
 function initReportsCharts(){
   if(!state.reportsData) return
   destroyCharts()
-  // 1. daily sourced
-  const raw=state.reportsData.daily_sourced||[]
-  const byDay={}; raw.forEach(r=>{ const key=String(r.day||'').slice(0,10); byDay[key]=(byDay[key]||0)+(r.n||0) })
-  const from=new Date(state.reportsFrom), to=new Date(state.reportsTo)
-  const days=[], counts=[]
-  const span=Math.min(120,Math.max(1,Math.round((to-from)/86400000)+1))
-  for(let i=span-1;i>=0;i--){ const dt=new Date(to); dt.setDate(dt.getDate()-i); const ymd=dt.toISOString().slice(0,10); days.push(dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'})); counts.push(byDay[ymd]||0) }
-  const dEl=document.getElementById('chart-daily')
-  if(dEl){ const ctx=dEl.getContext('2d'); const grad=ctx.createLinearGradient(0,0,0,260); grad.addColorStop(0,'rgba(99,102,241,0.18)'); grad.addColorStop(1,'rgba(99,102,241,0)'); state.chartInstances.daily=new Chart(dEl,{ type:'line', data:{ labels:days, datasets:[{ data:counts, borderColor:'#6366F1', backgroundColor:grad, fill:true, tension:0.3, pointRadius:span<=14?4:0, pointBackgroundColor:'#6366F1', pointHoverRadius:6, borderWidth:2 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#1C1917'}, datalabels:{display:false} }, scales:{ x:{ grid:{display:false}, ticks:{ color:'#78716C', font:{size:10}, maxRotation:0, autoSkip:true, maxTicksLimit:10 } }, y:{ beginAtZero:true, grid:{color:'#F5F5F4'}, ticks:{ color:'#78716C', font:{size:11}, precision:0 } } } } }) }
-  // 2. funnel
+  // recruiter sourced count
+  const rs=(state.reportsData.recruiter_stats||[]).filter(u=>u&&u.sourced).sort((a,b)=>(b.sourced||0)-(a.sourced||0))
+  const rLabels=rs.map(u=>u.full_name||u.email||'—')
+  const rData=rs.map(u=>u.sourced||0)
+  const rEl=document.getElementById('chart-recruiter-sourced')
+  if(rEl){ state.chartInstances.recruiterSourced=new Chart(rEl,{ type:'bar', data:{ labels:rLabels, datasets:[{ data:rData, backgroundColor:'#6366F1', borderRadius:4, borderSkipped:false, maxBarThickness:48 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#1C1917'}, datalabels:{ anchor:'end', align:'end', color:'#44403C', font:{size:11,weight:'600'}, formatter:(v)=>v>0?v:'' } }, scales:{ x:{ grid:{display:false}, ticks:{ color:'#78716C', font:{size:11}, maxRotation:30, minRotation:0, autoSkip:false } }, y:{ beginAtZero:true, grid:{color:'#F5F5F4'}, ticks:{ color:'#78716C', font:{size:11}, precision:0 } } } } }) }
+  // funnel
   const funnel=state.reportsData.funnel||[]
   const fmap={}; funnel.forEach(r=>{ fmap[r.stage]=r.n })
   const labels=STAGE_GROUPS.filter(g=>fmap[g])
