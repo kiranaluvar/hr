@@ -100,6 +100,19 @@ const ACTIVITY_TYPE_COLORS = {
 }
 const AVATAR_COLORS = ['bg-rose-500','bg-amber-500','bg-emerald-500','bg-cyan-500','bg-indigo-500','bg-fuchsia-500','bg-orange-500','bg-teal-500','bg-violet-500','bg-pink-500','bg-sky-500','bg-lime-600']
 const PAGE_SIZE = 50
+const PIVOT_DIMS=[
+  {key:'recruiter',label:'Recruiter'},
+  {key:'department',label:'Department'},
+  {key:'sub_department',label:'Sub-department'},
+  {key:'role',label:'Role'},
+  {key:'source_detail',label:'Source'},
+  {key:'source_type',label:'Source type'},
+  {key:'stage_group',label:'Stage group'},
+  {key:'stage_sub',label:'Stage'},
+  {key:'work_mode',label:'Work mode'},
+  {key:'notice_period',label:'Notice period'},
+  {key:'final_status',label:'Final status'},
+]
 
 const state = {
   session: null, profile: null, view: 'loading',
@@ -118,6 +131,7 @@ const state = {
   newDraft: {},
   exporting: false, saving: false, flash: null, bulkPanel: null,
   sidebarOpen: false, chartInstances: {},
+  pivot: { rows:'recruiter', cols:'stage_group', dept:[], role:[], source:[], recruiterId:'', stageGroup:'', workMode:'', loading:false, raw:null, matrix:null, rowKeys:[], colKeys:[], rowTotals:{}, colTotals:{}, grand:0, maxCell:0 },
 }
 
 // ── helpers ──────────────────────────────────────────────────────
@@ -672,7 +686,7 @@ function renderReports(){
   const reasonRows=Object.keys(byReason).length===0?'<tr><td colspan="2" class="text-center text-stone-400 py-6 text-sm">No rejections logged.</td></tr>':Object.entries(byReason).sort((a,b)=>b[1]-a[1]).map(([k,v])=>'<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(k)+'</td><td class="px-4 py-2 text-sm font-medium text-stone-900">'+v+'</td></tr>').join('')
   const view6=card('6. Why candidates fall out','Reject / drop reasons across all rounds','<table class="w-full max-w-lg"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Reason</th><th class="px-4 py-2">Count</th></tr></thead><tbody>'+reasonRows+'</tbody></table>')
 
-  return hdr+tiles+view1+view2+view3+view4+view5+view6
+  return hdr+tiles+view1+view2+view3+view4+view5+view6+renderPivot()
 }
 
 function destroyCharts(){ for(const k in state.chartInstances){ try{ state.chartInstances[k].destroy() }catch(e){} } state.chartInstances={} }
@@ -700,6 +714,98 @@ function initReportsCharts(){
   if(fEl){ state.chartInstances.funnel=new Chart(fEl,{ type:'bar', data:{ labels, datasets:[{ data:fdata, backgroundColor:fcolors, borderRadius:4, borderSkipped:false }] }, options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#1C1917'}, datalabels:{ anchor:'end', align:'end', color:'#44403C', font:{size:11,weight:'600'}, formatter:(v)=>v>0?v:'' } }, scales:{ x:{ beginAtZero:true, grid:{color:'#F5F5F4'}, ticks:{color:'#78716C',font:{size:11}} }, y:{ grid:{display:false}, ticks:{color:'#44403C',font:{size:11}} } } } }) }
 }
 
+// ── PIVOT ────────────────────────────────────────────────────────
+async function loadPivotData(){
+  const p=state.pivot
+  p.loading=true; render(); if(state.view==='reports') initReportsCharts()
+  const all=[]; const pageSize=1000; let from=0
+  while(true){
+    let q=supabase.from('candidates').select('recruiter_user_id,department,sub_department,role,source_detail,source_type,stage_group,stage_sub,work_mode,notice_period,final_status,is_archived,created_at').range(from,from+pageSize-1)
+    if(state.reportsFrom) q=q.gte('created_at',state.reportsFrom)
+    if(state.reportsTo) q=q.lte('created_at',state.reportsTo+'T23:59:59')
+    if(p.dept.length) q=q.in('department',p.dept)
+    if(p.role.length) q=q.in('role',p.role)
+    if(p.source.length) q=q.in('source_detail',p.source)
+    if(p.recruiterId==='unassigned') q=q.is('recruiter_user_id',null)
+    else if(p.recruiterId) q=q.eq('recruiter_user_id',p.recruiterId)
+    if(p.stageGroup) q=q.eq('stage_group',p.stageGroup)
+    if(p.workMode) q=q.eq('work_mode',p.workMode)
+    const {data,error}=await q
+    if(error){ p.loading=false; flash('err',error.message); render(); return }
+    all.push(...(data||[])); if(!data||data.length<pageSize) break; from+=pageSize
+  }
+  p.raw=all; computePivot(all)
+  p.loading=false; render(); if(state.view==='reports') initReportsCharts()
+}
+function pivotVal(dimKey,c){
+  if(dimKey==='recruiter') return userName(c.recruiter_user_id)||'Unassigned'
+  if(dimKey==='final_status') return c.final_status||'In process'
+  return c[dimKey]||'—'
+}
+function computePivot(rows){
+  const p=state.pivot
+  const m={}, rowTotals={}, colTotals={}, rowSet=new Set(), colSet=new Set()
+  let grand=0
+  for(const c of rows){
+    const rk=pivotVal(p.rows,c), ck=pivotVal(p.cols,c)
+    rowSet.add(rk); colSet.add(ck)
+    ;(m[rk]=m[rk]||{})[ck]=(m[rk][ck]||0)+1
+    rowTotals[rk]=(rowTotals[rk]||0)+1; colTotals[ck]=(colTotals[ck]||0)+1; grand++
+  }
+  const order=(set,key,totals)=>{
+    if(key==='stage_group') return STAGE_GROUPS.filter(g=>set.has(g)).concat(Array.from(set).filter(k=>!STAGE_GROUPS.includes(k)))
+    if(key==='stage_sub'){ const flat=[]; STAGE_GROUPS.forEach(g=>(STAGE_SUBS[g]||[]).forEach(s=>{ if(set.has(s)) flat.push(s) })); return flat.concat(Array.from(set).filter(k=>!flat.includes(k))) }
+    return Array.from(set).sort((a,b)=>(totals[b]||0)-(totals[a]||0))
+  }
+  let rowKeys=order(rowSet,p.rows,rowTotals), colKeys=order(colSet,p.cols,colTotals)
+  const MAX_R=80, MAX_C=25
+  if(colKeys.length>MAX_C){ const rest=colKeys.slice(MAX_C-1); for(const rk in m){ let o=0; for(const ck of rest){ if(m[rk][ck]){ o+=m[rk][ck]; delete m[rk][ck] } } if(o) m[rk]['Other']=(m[rk]['Other']||0)+o } let ot=0; rest.forEach(k=>{ ot+=colTotals[k]||0; delete colTotals[k] }); colTotals['Other']=(colTotals['Other']||0)+ot; colKeys=colKeys.slice(0,MAX_C-1).concat(['Other']) }
+  if(rowKeys.length>MAX_R){ const rest=rowKeys.slice(MAX_R-1); const ob={}; let ot=0; rest.forEach(rk=>{ const r=m[rk]||{}; for(const ck in r) ob[ck]=(ob[ck]||0)+r[ck]; ot+=rowTotals[rk]||0; delete m[rk]; delete rowTotals[rk] }); m['Other']=ob; rowTotals['Other']=ot; rowKeys=rowKeys.slice(0,MAX_R-1).concat(['Other']) }
+  let mx=0; for(const rk of rowKeys) for(const ck of colKeys){ const v=(m[rk]&&m[rk][ck])||0; if(v>mx) mx=v }
+  p.matrix=m; p.rowKeys=rowKeys; p.colKeys=colKeys; p.rowTotals=rowTotals; p.colTotals=colTotals; p.grand=grand; p.maxCell=mx
+}
+function exportPivot(){
+  const p=state.pivot; if(!p.matrix||!p.grand){ flash('err','Nothing to export'); return }
+  const rowLabel=(PIVOT_DIMS.find(d=>d.key===p.rows)||{}).label||'Row'
+  const q=(v)=>{ if(v===null||v===undefined) return ''; const s=String(v); return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s }
+  const lines=[[rowLabel,...p.colKeys,'Total'].map(q).join(',')]
+  p.rowKeys.forEach(rk=>{ lines.push([rk,...p.colKeys.map(ck=>(p.matrix[rk]&&p.matrix[rk][ck])||0),p.rowTotals[rk]||0].map(q).join(',')) })
+  lines.push(['Total',...p.colKeys.map(ck=>p.colTotals[ck]||0),p.grand].map(q).join(','))
+  const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='pivot-'+todayYMD()+'.csv'; a.click(); URL.revokeObjectURL(url)
+}
+function renderPivot(){
+  const p=state.pivot
+  const dimSel=(axis,val)=>'<select data-action="pivot-dim-change" data-axis="'+axis+'" class="text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring">'+PIVOT_DIMS.map(d=>'<option value="'+d.key+'"'+(val===d.key?' selected':'')+'>'+esc(d.label)+'</option>').join('')+'</select>'
+  const recruiterOpts=state.users.map(u=>'<option value="'+esc(u.user_id)+'"'+(p.recruiterId===u.user_id?' selected':'')+'>'+esc(u.full_name||u.email)+'</option>').join('')
+  const controls='<div class="flex flex-wrap items-center gap-2 mb-4">'
+    + '<span class="text-[10px] font-semibold text-stone-500 uppercase tracking-wider">Rows</span>'+dimSel('rows',p.rows)
+    + '<span class="text-stone-400">×</span><span class="text-[10px] font-semibold text-stone-500 uppercase tracking-wider">Cols</span>'+dimSel('cols',p.cols)
+    + '<span class="w-px h-6 bg-stone-200 mx-1"></span>'
+    + multiSelectDropdown('pivot_dept','All departments',DEPARTMENTS.map(d=>({value:d,label:d})),p.dept,{searchable:true})
+    + multiSelectDropdown('pivot_role','All roles',ROLES.map(r=>({value:r,label:r})),p.role,{searchable:true})
+    + multiSelectDropdown('pivot_source','All sources',SOURCE_DETAILS.map(s=>({value:s,label:s})),p.source,{searchable:true})
+    + '<select data-action="pivot-recruiter-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">All recruiters</option><option value="unassigned"'+(p.recruiterId==='unassigned'?' selected':'')+'>Unassigned</option>'+recruiterOpts+'</select>'
+    + '<select data-action="pivot-stage-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">All stages</option>'+STAGE_GROUPS.map(g=>'<option value="'+esc(g)+'"'+(p.stageGroup===g?' selected':'')+'>'+esc(g)+'</option>').join('')+'</select>'
+    + '<select data-action="pivot-workmode-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Any work mode</option>'+WORK_MODES.map(w=>'<option value="'+esc(w)+'"'+(p.workMode===w?' selected':'')+'>'+esc(w)+'</option>').join('')+'</select>'
+    + '<button data-action="pivot-clear" class="text-sm text-stone-500 hover:text-stone-800 px-2">Clear</button>'
+    + '<button data-action="pivot-export" class="text-sm border border-stone-200 hover:border-stone-400 text-stone-700 px-3 py-1.5 rounded-md ml-auto">Export CSV</button>'
+    + '</div>'
+  let table
+  if(p.loading) table='<div class="text-sm text-stone-500 py-10 text-center">Building pivot…</div>'
+  else if(!p.matrix||!p.grand) table='<div class="text-sm text-stone-400 py-10 text-center">No candidates match these filters.</div>'
+  else{
+    const rowLabel=(PIVOT_DIMS.find(d=>d.key===p.rows)||{}).label||''
+    const head='<thead class="bg-stone-50"><tr class="text-xs font-semibold text-stone-500 uppercase tracking-wider"><th class="py-2 px-3 text-left sticky left-0 bg-stone-50 z-10">'+esc(rowLabel)+'</th>'+p.colKeys.map(ck=>'<th class="py-2 px-3 text-right whitespace-nowrap">'+esc(ck)+'</th>').join('')+'<th class="py-2 px-3 text-right text-stone-700">Total</th></tr></thead>'
+    const body=p.rowKeys.map(rk=>{
+      const cells=p.colKeys.map(ck=>{ const v=(p.matrix[rk]&&p.matrix[rk][ck])||0; const a=p.maxCell?(v/p.maxCell*0.82):0; const bg=v?' style="background:rgba(99,102,241,'+a.toFixed(3)+')"':''; return '<td class="py-1.5 px-3 text-right text-sm '+(v?'text-stone-900':'text-stone-300')+'"'+bg+'>'+(v||'·')+'</td>' }).join('')
+      return '<tr class="border-t border-stone-100"><td class="py-1.5 px-3 text-sm font-medium text-stone-800 sticky left-0 bg-white z-10 whitespace-nowrap">'+esc(rk)+'</td>'+cells+'<td class="py-1.5 px-3 text-right text-sm font-semibold text-stone-900 bg-stone-50/60">'+(p.rowTotals[rk]||0)+'</td></tr>'
+    }).join('')
+    const foot='<tr class="border-t-2 border-stone-200 bg-stone-50"><td class="py-2 px-3 text-left text-sm font-semibold text-stone-900 sticky left-0 bg-stone-50 z-10">Total</td>'+p.colKeys.map(ck=>'<td class="py-2 px-3 text-right text-sm font-semibold text-stone-900">'+(p.colTotals[ck]||0)+'</td>').join('')+'<td class="py-2 px-3 text-right text-sm font-bold text-indigo-700">'+p.grand+'</td></tr>'
+    table='<div class="overflow-x-auto border border-stone-200 rounded-lg"><table class="w-full">'+head+'<tbody>'+body+foot+'</tbody></table></div>'
+  }
+  return '<section class="bg-white border border-stone-200 rounded-lg overflow-hidden mb-6"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">7. Pivot table</h2><p class="text-xs text-stone-500 mt-0.5">Cross-tabulate any two dimensions. Respects the date range above.</p></header><div class="p-4">'+controls+table+'</div></section>'
+}
+
 // ── window helpers for activity form ─────────────────────────────
 function updateSubStageOptions(group){ const sub=document.getElementById('act-stage-sub'); if(!sub) return; const subs=STAGE_SUBS[group]||(state.currentCandidate?STAGE_SUBS[state.currentCandidate.stage_group]||[]:[]); sub.innerHTML='<option value="">Keep current</option>'+subs.map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>').join(''); toggleActivityFormFields() }
 function toggleActivityFormFields(){
@@ -718,6 +824,7 @@ window.toggleRejectOther=toggleRejectOther
 
 // ── handlers ─────────────────────────────────────────────────────
 let searchDebounce=null
+function msArray(key){ if(key==='pivot_dept') return state.pivot.dept; if(key==='pivot_role') return state.pivot.role; if(key==='pivot_source') return state.pivot.source; return state.filters[key] }
 function attachHandlers(){
   const root=document.getElementById('app')
   root.onclick=(e)=>{
@@ -743,11 +850,13 @@ function attachHandlers(){
     if(action==='bulk-delete-execute'){ bulkDelete(); return }
     if(action==='toggle-filter-dropdown'){ state.openFilter=(state.openFilter===el.dataset.key)?null:el.dataset.key; render(); return }
     if(action==='close-filter-dropdown'||action==='filter-dropdown-done'){ state.openFilter=null; render(); return }
-    if(action==='filter-dropdown-clear'){ const key=el.dataset.key; state.filters[key]=[]; state.filterSearch[key]=''; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render); return }
+    if(action==='filter-dropdown-clear'){ const key=el.dataset.key; const arr=msArray(key); arr.length=0; state.filterSearch[key]=''; if(key.indexOf('pivot_')===0){ loadPivotData() } else { state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) } return }
     if(action==='toggle-sidebar'){ state.sidebarOpen=!state.sidebarOpen; render(); return }
     if(action==='set-role'){ setUserRole(id,el.dataset.role); return }
     if(action==='set-na-filter'){ state.nextActionsFilter=el.dataset.filter; loadNextActions().then(render); return }
     if(action==='export-csv'){ exportCsv(); return }
+    if(action==='pivot-clear'){ const p=state.pivot; p.dept=[]; p.role=[]; p.source=[]; p.recruiterId=''; p.stageGroup=''; p.workMode=''; loadPivotData(); return }
+    if(action==='pivot-export'){ exportPivot(); return }
     if(action==='open-resume'){ e.preventDefault(); openResume(el.dataset.path); return }
   }
   root.onsubmit=(e)=>{
@@ -764,14 +873,14 @@ function attachHandlers(){
     if(el.dataset.action==='filter-dropdown-search'){ state.filterSearch[el.dataset.key]=el.value; render(); requestAnimationFrame(()=>{ const box=document.querySelector('[data-action="filter-dropdown-search"][data-key="'+el.dataset.key+'"]'); if(box){ box.focus(); box.setSelectionRange(box.value.length,box.value.length) } }) }
     if(el.dataset.action==='filter-search-input'){ state.filters.search=el.value; clearTimeout(searchDebounce); searchDebounce=setTimeout(()=>{ state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(()=>{ render(); requestAnimationFrame(()=>{ const inp=document.querySelector('[data-action="filter-search-input"]'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length,inp.value.length) } }) }) },400) }
     if(el.dataset.action==='bulk-delete-input'){ const ok=el.value.trim()==='delete '+state.selectedIds.size; const btn=document.getElementById('bulk-delete-execute'); if(btn) btn.disabled=!ok }
-    if(el.dataset.action==='reports-from-change'){ state.reportsFrom=el.value; loadReports().then(()=>{ render(); initReportsCharts() }) }
-    if(el.dataset.action==='reports-to-change'){ state.reportsTo=el.value; loadReports().then(()=>{ render(); initReportsCharts() }) }
+    if(el.dataset.action==='reports-from-change'){ state.reportsFrom=el.value; loadReports().then(()=>{ render(); initReportsCharts() }); loadPivotData() }
+    if(el.dataset.action==='reports-to-change'){ state.reportsTo=el.value; loadReports().then(()=>{ render(); initReportsCharts() }); loadPivotData() }
   }
   root.onchange=(e)=>{
     if(state.view==='candidate-new'){ const form=e.target.closest('form[data-action="submit-new-candidate"]'); if(form) CAND_FIELDS.forEach(f=>{ const el2=form[f]; if(el2) state.newDraft[f]=el2.value }) }
     const el=e.target.closest('[data-action]'); if(!el) return
     const action=el.dataset.action
-    if(action==='filter-dropdown-toggle'){ const key=el.dataset.key, val=el.dataset.value; const arr=state.filters[key]; const idx=arr.indexOf(val); if(el.checked&&idx===-1) arr.push(val); else if(!el.checked&&idx!==-1) arr.splice(idx,1); state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render); return }
+    if(action==='filter-dropdown-toggle'){ const key=el.dataset.key, val=el.dataset.value; const arr=msArray(key); const idx=arr.indexOf(val); if(el.checked&&idx===-1) arr.push(val); else if(!el.checked&&idx!==-1) arr.splice(idx,1); if(key.indexOf('pivot_')===0){ loadPivotData() } else { state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) } return }
     if(action==='filter-stage-group-change'){ state.filters.stageGroup=el.value; state.filters.stageSub=''; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
     if(action==='filter-stage-sub-change'){ state.filters.stageSub=el.value; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
     if(action==='filter-recruiter-change'){ state.filters.recruiterId=el.value; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
@@ -782,6 +891,10 @@ function attachHandlers(){
     if(action==='toggle-select-all'){ if(el.checked) state.candidates.forEach(c=>state.selectedIds.add(c.id)); else state.candidates.forEach(c=>state.selectedIds.delete(c.id)); render() }
     if(action==='bulk-reassign-change'){ const v=el.value; if(v==='') return; if(v==='UNASSIGN') bulkReassign(null); else bulkReassign(v) }
     if(action==='na-owner-change'){ state.nextActionsOwnerFilter=el.value; loadNextActions().then(render) }
+    if(action==='pivot-dim-change'){ state.pivot[el.dataset.axis]=el.value; if(state.pivot.raw){ computePivot(state.pivot.raw); render(); if(state.view==='reports') initReportsCharts() } else loadPivotData(); return }
+    if(action==='pivot-recruiter-change'){ state.pivot.recruiterId=el.value; loadPivotData(); return }
+    if(action==='pivot-stage-change'){ state.pivot.stageGroup=el.value; loadPivotData(); return }
+    if(action==='pivot-workmode-change'){ state.pivot.workMode=el.value; loadPivotData(); return }
   }
 }
 
@@ -797,7 +910,7 @@ async function handleRoute(){
   else if(hash.startsWith('/candidates/')){ const id=decodeURIComponent(hash.split('/')[2]); state.view='candidate-detail'; state.currentCandidate=null; state.activities=[]; state.auditLog=[]; state.interviews=[]; render(); await Promise.all([loadCandidate(id),loadActivities(id),loadInterviews(id)]); render() }
   else if(hash==='/next-actions'){ state.view='next-actions'; render(); await Promise.all([loadMyOverdueCount(),loadNextActions()]); render() }
   else if(hash==='/team'){ if(!isAdmin()){ window.location.hash='#/candidates'; return } state.view='team'; render(); await Promise.all([loadUsers(),loadCountsByRecruiter()]); render() }
-  else if(hash==='/reports'){ if(!isAdmin()){ window.location.hash='#/candidates'; return } state.view='reports'; render(); await loadReports(); render(); initReportsCharts() }
+  else if(hash==='/reports'){ if(!isAdmin()){ window.location.hash='#/candidates'; return } state.view='reports'; render(); await loadReports(); render(); initReportsCharts(); loadPivotData() }
   else window.location.hash='#/candidates'
 }
 
