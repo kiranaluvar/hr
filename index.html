@@ -131,7 +131,8 @@ const state = {
   newDraft: {},
   exporting: false, saving: false, flash: null, bulkPanel: null,
   sidebarOpen: false, chartInstances: {},
-  pivot: { rows:'recruiter', cols:'stage_group', dept:[], role:[], source:[], recruiterId:'', stageGroup:'', workMode:'', loading:false, raw:null, matrix:null, rowKeys:[], colKeys:[], rowTotals:{}, colTotals:{}, grand:0, maxCell:0 },
+  pivot: { rows:'recruiter', cols:'stage_group', dept:[], role:[], source:[], recruiterId:'', stageGroup:'', workMode:'', loading:false, raw:null, matrix:null, rowKeys:[], colKeys:[], rowTotals:{}, colTotals:{}, grand:0, maxCell:0, grouped:null },
+  groupedOpen: {},
 }
 
 // ── helpers ──────────────────────────────────────────────────────
@@ -458,7 +459,7 @@ function renderCandidatesList(){
 
   const bulkBar=state.selectedIds.size>0?'<div class="mb-3 flex items-center gap-3 bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2.5"><span class="text-sm font-medium text-indigo-800">'+state.selectedIds.size+' selected</span>'+(isAdmin()?'<select data-action="bulk-reassign-change" class="text-sm px-2.5 py-1 border border-indigo-200 rounded-md bg-white focus-ring"><option value="">Reassign to…</option><option value="UNASSIGN">Unassign</option>'+state.users.map(u=>'<option value="'+esc(u.user_id)+'">'+esc(u.full_name||u.email)+'</option>').join('')+'</select><button data-action="bulk-delete-confirm" class="text-sm text-rose-600 hover:text-rose-800 font-medium">Delete</button>':'')+'<button data-action="clear-selection" class="text-sm text-stone-500 hover:text-stone-800 ml-auto">Clear</button></div>':''
 
-  const deleteModal=state.bulkPanel==='delete-confirm'?'<div class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4" data-action="close-modal"><div class="bg-white rounded-lg p-6 max-w-sm w-full" onclick="event.stopPropagation()"><h3 class="text-base font-semibold text-stone-900 mb-2">Delete '+state.selectedIds.size+' candidate'+(state.selectedIds.size===1?'':'s')+'?</h3><p class="text-sm text-stone-500 mb-4">This permanently removes them and their activity. Type <span class="font-mono font-semibold">delete '+state.selectedIds.size+'</span> to confirm.</p><input type="text" data-action="bulk-delete-input" placeholder="delete '+state.selectedIds.size+'" class="w-full text-sm px-3 py-2 border border-stone-200 rounded-md mb-4 focus-ring"><div class="flex gap-2 justify-end"><button data-action="cancel-bulk" class="text-sm text-stone-600 px-3 py-1.5">Cancel</button><button id="bulk-delete-execute" data-action="bulk-delete-execute" disabled class="text-sm bg-rose-600 disabled:bg-rose-300 text-white px-3 py-1.5 rounded-md font-medium">Delete</button></div></div></div>':''
+  const deleteModal=state.bulkPanel==='delete-confirm'?'<div class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4" data-action="close-modal"><div class="bg-white rounded-lg p-6 max-w-sm w-full"><h3 class="text-base font-semibold text-stone-900 mb-2">Delete '+state.selectedIds.size+' candidate'+(state.selectedIds.size===1?'':'s')+'?</h3><p class="text-sm text-stone-500 mb-4">This permanently removes them and their activity. Type <span class="font-mono font-semibold">delete '+state.selectedIds.size+'</span> to confirm.</p><input type="text" data-action="bulk-delete-input" placeholder="delete '+state.selectedIds.size+'" class="w-full text-sm px-3 py-2 border border-stone-200 rounded-md mb-4 focus-ring"><div class="flex gap-2 justify-end"><button data-action="cancel-bulk" class="text-sm text-stone-600 px-3 py-1.5">Cancel</button><button id="bulk-delete-execute" data-action="bulk-delete-execute" disabled class="text-sm bg-rose-600 disabled:bg-rose-300 text-white px-3 py-1.5 rounded-md font-medium">Delete</button></div></div></div>':''
 
   return '<div class="mb-5 flex items-end justify-between flex-wrap gap-3"><div><h1 class="text-xl font-semibold tracking-tight text-stone-900">Candidates</h1><p class="text-sm text-stone-500 mt-0.5">'+state.candidatesTotal.toLocaleString()+' in pipeline'+(state.candidatesTotal>0?' · showing '+start+'–'+end:'')+'</p></div>'+(isAdmin()?'<button data-action="export-csv"'+(state.exporting?' disabled':'')+' class="text-sm border border-stone-200 hover:border-stone-400 text-stone-700 px-3 py-1.5 rounded-md transition">'+(state.exporting?'Exporting…':'Export CSV')+'</button>':'')+'</div>'
     + deleteModal
@@ -686,7 +687,7 @@ function renderReports(){
   const reasonRows=Object.keys(byReason).length===0?'<tr><td colspan="2" class="text-center text-stone-400 py-6 text-sm">No rejections logged.</td></tr>':Object.entries(byReason).sort((a,b)=>b[1]-a[1]).map(([k,v])=>'<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(k)+'</td><td class="px-4 py-2 text-sm font-medium text-stone-900">'+v+'</td></tr>').join('')
   const view6=card('6. Why candidates fall out','Reject / drop reasons across all rounds','<table class="w-full max-w-lg"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Reason</th><th class="px-4 py-2">Count</th></tr></thead><tbody>'+reasonRows+'</tbody></table>')
 
-  return hdr+tiles+view1+view2+view3+view4+view5+view6+renderPivot()
+  return hdr+tiles+view1+view2+view3+view4+view5+view6+renderPivot()+renderGroupedSection()
 }
 
 function destroyCharts(){ for(const k in state.chartInstances){ try{ state.chartInstances[k].destroy() }catch(e){} } state.chartInstances={} }
@@ -697,13 +698,13 @@ function initReportsCharts(){
   destroyCharts()
   // 1. daily sourced
   const raw=state.reportsData.daily_sourced||[]
-  const byDay={}; raw.forEach(r=>{ byDay[r.day]=r.n })
+  const byDay={}; raw.forEach(r=>{ const key=String(r.day||'').slice(0,10); byDay[key]=(byDay[key]||0)+(r.n||0) })
   const from=new Date(state.reportsFrom), to=new Date(state.reportsTo)
   const days=[], counts=[]
   const span=Math.min(120,Math.max(1,Math.round((to-from)/86400000)+1))
   for(let i=span-1;i>=0;i--){ const dt=new Date(to); dt.setDate(dt.getDate()-i); const ymd=dt.toISOString().slice(0,10); days.push(dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'})); counts.push(byDay[ymd]||0) }
   const dEl=document.getElementById('chart-daily')
-  if(dEl){ const ctx=dEl.getContext('2d'); const grad=ctx.createLinearGradient(0,0,0,260); grad.addColorStop(0,'rgba(99,102,241,0.18)'); grad.addColorStop(1,'rgba(99,102,241,0)'); state.chartInstances.daily=new Chart(dEl,{ type:'line', data:{ labels:days, datasets:[{ data:counts, borderColor:'#6366F1', backgroundColor:grad, fill:true, tension:0.3, pointRadius:0, pointHoverRadius:4, borderWidth:2 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#1C1917'}, datalabels:{display:false} }, scales:{ x:{ grid:{display:false}, ticks:{ color:'#78716C', font:{size:10}, maxRotation:0, autoSkip:true, maxTicksLimit:10 } }, y:{ beginAtZero:true, grid:{color:'#F5F5F4'}, ticks:{ color:'#78716C', font:{size:11}, precision:0 } } } } }) }
+  if(dEl){ const ctx=dEl.getContext('2d'); const grad=ctx.createLinearGradient(0,0,0,260); grad.addColorStop(0,'rgba(99,102,241,0.18)'); grad.addColorStop(1,'rgba(99,102,241,0)'); state.chartInstances.daily=new Chart(dEl,{ type:'line', data:{ labels:days, datasets:[{ data:counts, borderColor:'#6366F1', backgroundColor:grad, fill:true, tension:0.3, pointRadius:span<=14?4:0, pointBackgroundColor:'#6366F1', pointHoverRadius:6, borderWidth:2 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#1C1917'}, datalabels:{display:false} }, scales:{ x:{ grid:{display:false}, ticks:{ color:'#78716C', font:{size:10}, maxRotation:0, autoSkip:true, maxTicksLimit:10 } }, y:{ beginAtZero:true, grid:{color:'#F5F5F4'}, ticks:{ color:'#78716C', font:{size:11}, precision:0 } } } } }) }
   // 2. funnel
   const funnel=state.reportsData.funnel||[]
   const fmap={}; funnel.forEach(r=>{ fmap[r.stage]=r.n })
@@ -734,7 +735,7 @@ async function loadPivotData(){
     if(error){ p.loading=false; flash('err',error.message); render(); return }
     all.push(...(data||[])); if(!data||data.length<pageSize) break; from+=pageSize
   }
-  p.raw=all; computePivot(all)
+  p.raw=all; computePivot(all); p.grouped=computeGroupedBreakdown(all)
   p.loading=false; render(); if(state.view==='reports') initReportsCharts()
 }
 function pivotVal(dimKey,c){
@@ -806,6 +807,47 @@ function renderPivot(){
   return '<section class="bg-white border border-stone-200 rounded-lg overflow-hidden mb-6"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">7. Pivot table</h2><p class="text-xs text-stone-500 mt-0.5">Cross-tabulate any two dimensions. Respects the date range above.</p></header><div class="p-4">'+controls+table+'</div></section>'
 }
 
+function computeGroupedBreakdown(rows){
+  const cols=WORK_MODES
+  const groups={}
+  const grand={}; cols.forEach(c=>grand[c]=0); grand.total=0
+  for(const c of rows){
+    const sd=c.sub_department||'—'
+    const role=c.role||'—'
+    const wm=cols.includes(c.work_mode)?c.work_mode:null
+    if(!groups[sd]){ const t={}; cols.forEach(x=>t[x]=0); t.total=0; groups[sd]={roles:{}, totals:t} }
+    if(!groups[sd].roles[role]){ const t={}; cols.forEach(x=>t[x]=0); t.total=0; groups[sd].roles[role]=t }
+    if(wm){ groups[sd].roles[role][wm]++; groups[sd].totals[wm]++; grand[wm]++ }
+    groups[sd].roles[role].total++; groups[sd].totals.total++; grand.total++
+  }
+  const subDepts=Object.keys(groups).sort((a,b)=>a.localeCompare(b))
+  return {groups,subDepts,grand}
+}
+function renderGroupedBreakdown(){
+  const gd=state.pivot.grouped
+  if(!gd||!gd.subDepts.length) return '<div class="text-sm text-stone-400 py-10 text-center">No candidates match these filters.</div>'
+  const cols=WORK_MODES
+  const open=state.groupedOpen
+  const head='<thead class="bg-stone-50"><tr class="text-xs font-semibold text-stone-500 uppercase tracking-wider"><th class="py-2 px-3 text-left" colspan="2">Sub-department / Role</th>'+cols.map(c=>'<th class="py-2 px-3 text-right">'+esc(c)+'</th>').join('')+'<th class="py-2 px-3 text-right text-stone-700">Total</th></tr></thead>'
+  let body=''
+  gd.subDepts.forEach(sd=>{
+    const g=gd.groups[sd]
+    const isOpen=open[sd]!==false
+    const roleNames=Object.keys(g.roles).sort((a,b)=>a.localeCompare(b))
+    body+='<tr class="border-t border-stone-200 bg-stone-50/70 hover:bg-stone-100 cursor-pointer" data-action="grouped-toggle" data-key="'+esc(sd)+'"><td class="py-1.5 px-3 text-sm font-semibold text-stone-800" colspan="2"><span class="inline-block w-3 text-stone-400">'+(isOpen?'▾':'▸')+'</span> '+esc(sd)+'</td>'+cols.map(c=>'<td class="py-1.5 px-3 text-right text-sm font-semibold text-stone-800">'+(g.totals[c]||0)+'</td>').join('')+'<td class="py-1.5 px-3 text-right text-sm font-bold text-stone-900">'+g.totals.total+'</td></tr>'
+    if(isOpen) roleNames.forEach(role=>{
+      const r=g.roles[role]
+      body+='<tr class="border-t border-stone-100"><td class="w-6"></td><td class="py-1.5 px-3 text-sm text-stone-700">'+esc(role)+'</td>'+cols.map(c=>'<td class="py-1.5 px-3 text-right text-sm '+(r[c]?'text-stone-900':'text-stone-300')+'">'+(r[c]||'·')+'</td>').join('')+'<td class="py-1.5 px-3 text-right text-sm font-medium text-stone-900">'+r.total+'</td></tr>'
+    })
+  })
+  const foot='<tr class="border-t-2 border-stone-200 bg-stone-50"><td class="py-2 px-3 text-sm font-semibold text-stone-900" colspan="2">Grand total</td>'+cols.map(c=>'<td class="py-2 px-3 text-right text-sm font-semibold text-stone-900">'+(gd.grand[c]||0)+'</td>').join('')+'<td class="py-2 px-3 text-right text-sm font-bold text-indigo-700">'+gd.grand.total+'</td></tr>'
+  return '<div class="overflow-x-auto border border-stone-200 rounded-lg"><table class="w-full">'+head+'<tbody>'+body+foot+'</tbody></table></div>'
+}
+function renderGroupedSection(){
+  const loading=state.pivot.loading
+  return '<section class="bg-white border border-stone-200 rounded-lg overflow-hidden mb-6"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">8. Sub-department × Role, by work mode</h2><p class="text-xs text-stone-500 mt-0.5">Click a sub-department row to expand or collapse its roles. Respects the date range and pivot filters above.</p></header><div class="p-4">'+(loading?'<div class="text-sm text-stone-500 py-10 text-center">Building breakdown…</div>':renderGroupedBreakdown())+'</div></section>'
+}
+
 // ── window helpers for activity form ─────────────────────────────
 function updateSubStageOptions(group){ const sub=document.getElementById('act-stage-sub'); if(!sub) return; const subs=STAGE_SUBS[group]||(state.currentCandidate?STAGE_SUBS[state.currentCandidate.stage_group]||[]:[]); sub.innerHTML='<option value="">Keep current</option>'+subs.map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>').join(''); toggleActivityFormFields() }
 function toggleActivityFormFields(){
@@ -857,6 +899,7 @@ function attachHandlers(){
     if(action==='export-csv'){ exportCsv(); return }
     if(action==='pivot-clear'){ const p=state.pivot; p.dept=[]; p.role=[]; p.source=[]; p.recruiterId=''; p.stageGroup=''; p.workMode=''; loadPivotData(); return }
     if(action==='pivot-export'){ exportPivot(); return }
+    if(action==='grouped-toggle'){ const key=el.dataset.key; const isOpen=state.groupedOpen[key]!==false; state.groupedOpen[key]=!isOpen; render(); return }
     if(action==='open-resume'){ e.preventDefault(); openResume(el.dataset.path); return }
   }
   root.onsubmit=(e)=>{
