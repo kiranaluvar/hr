@@ -311,11 +311,13 @@ async function submitNewCandidate(form){
   CAND_FIELDS.forEach(f=>{ const v=form[f]?.value?.trim(); if(v) row[f]=v })
   if(row.source_detail) row.source_type=SOURCE_TYPE_MAP[row.source_detail]||null
   ;['total_exp','current_ctc','expected_ctc'].forEach(k=>{ if(row[k]!==undefined) row[k]=Number(row[k])||null })
+  const file=form.resume_file?.files?.[0]||null
   const {data,error}=await supabase.from('candidates').insert(row).select('id').single()
+  if(error){ state.saving=false; flash('err',error.message); render(); return }
+  if(file){ try{ const path=await uploadResume(data.id,file); await supabase.from('candidates').update({resume_url:path}).eq('id',data.id) }catch(upErr){ state.saving=false; state.newDraft={}; flash('err','Candidate saved, but CV upload failed: '+upErr.message); window.location.hash='#/candidates/'+data.id; return } }
   state.saving=false
-  if(error){ flash('err',error.message); render(); return }
   state.newDraft={}
-  flash('ok','Candidate added')
+  flash('ok', file?'Candidate added · CV uploaded':'Candidate added')
   window.location.hash='#/candidates/'+data.id
 }
 
@@ -326,6 +328,8 @@ async function saveCandidateEdits(form){
   CAND_FIELDS.forEach(f=>{ const v=form[f]?.value?.trim(); patch[f]=v===''?null:v })
   if(patch.source_detail) patch.source_type=SOURCE_TYPE_MAP[patch.source_detail]||null
   ;['total_exp','current_ctc','expected_ctc'].forEach(k=>{ patch[k]=patch[k]?Number(patch[k])||null:null })
+  const file=form.resume_file?.files?.[0]||null
+  if(file){ try{ patch.resume_url=await uploadResume(state.currentCandidate.id,file) }catch(upErr){ state.saving=false; flash('err','CV upload failed: '+upErr.message); render(); return } }
   const {error}=await supabase.from('candidates').update(patch).eq('id',state.currentCandidate.id)
   state.saving=false
   if(error){ flash('err',error.message); render(); return }
@@ -514,7 +518,7 @@ function renderCandidateFields(c,editable){
   const fieldRow=(label,value)=>'<div class="py-2 grid grid-cols-3 gap-3 border-b border-stone-100 last:border-0"><dt class="text-xs uppercase tracking-wider font-medium">'+esc(label)+'</dt><dd class="col-span-2 text-sm">'+(value?esc(value):'<span class="text-stone-300">—</span>')+'</dd></div>'
   const phoneRow=(label,num)=>{ if(!num) return fieldRow(label,''); const cc=cleanPhone(num); const acts=cc?'<a href="tel:'+cc+'" class="text-xs font-medium text-blue-600 hover:underline">📞 Call</a><a href="sms:'+cc+'" class="text-xs font-medium text-stone-600 hover:underline">💬 SMS</a><a href="https://wa.me/'+cc.replace('+','')+'" target="_blank" rel="noopener" class="text-xs font-medium text-emerald-600 hover:underline">🟢 WhatsApp</a>':''; return '<div class="py-2 grid grid-cols-3 gap-3 border-b border-stone-100 last:border-0"><dt class="text-xs uppercase tracking-wider font-medium">'+esc(label)+'</dt><dd class="col-span-2 text-sm flex flex-wrap items-center gap-x-3 gap-y-1"><span>'+esc(num)+'</span>'+acts+'</dd></div>' }
   const emailRow=(label,em)=>{ if(!em) return fieldRow(label,''); return '<div class="py-2 grid grid-cols-3 gap-3 border-b border-stone-100 last:border-0"><dt class="text-xs uppercase tracking-wider font-medium">'+esc(label)+'</dt><dd class="col-span-2 text-sm"><a href="mailto:'+esc(em)+'" class="text-indigo-600 hover:underline break-all">'+esc(em)+'</a></dd></div>' }
-  const linkRow=(label,url)=>{ if(!url) return fieldRow(label,''); const href=/^https?:/.test(url)?url:('https://'+url); return '<div class="py-2 grid grid-cols-3 gap-3 border-b border-stone-100 last:border-0"><dt class="text-xs uppercase tracking-wider font-medium">'+esc(label)+'</dt><dd class="col-span-2 text-sm"><a href="'+esc(href)+'" target="_blank" rel="noopener" class="text-indigo-600 hover:underline break-all">Open resume ↗</a></dd></div>' }
+  const linkRow=(label,url)=>{ if(!url) return fieldRow(label,''); const isLink=/^https?:/.test(url); const ctrl=isLink?'<a href="'+esc(url)+'" target="_blank" rel="noopener" class="text-indigo-600 hover:underline break-all">Open resume ↗</a>':'<button type="button" data-action="open-resume" data-path="'+esc(url)+'" class="text-indigo-600 hover:underline">Open CV ↗</button>'; return '<div class="py-2 grid grid-cols-3 gap-3 border-b border-stone-100 last:border-0"><dt class="text-xs uppercase tracking-wider font-medium">'+esc(label)+'</dt><dd class="col-span-2 text-sm">'+ctrl+'</dd></div>' }
   const editBtn=editable?'<button data-action="enter-edit-mode" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">Edit</button>':''
   const money=(v)=>v?('₹ '+Number(v).toLocaleString('en-IN')):null
   const body='<div class="field-grid">'
@@ -744,7 +748,7 @@ function attachHandlers(){
     if(action==='set-role'){ setUserRole(id,el.dataset.role); return }
     if(action==='set-na-filter'){ state.nextActionsFilter=el.dataset.filter; loadNextActions().then(render); return }
     if(action==='export-csv'){ exportCsv(); return }
-    if(action==='toggle-audit-log'){ state.auditLogOpen=!state.auditLogOpen; if(state.auditLogOpen&&state.currentCandidate) loadAuditLog(state.currentCandidate.id).then(render); else render(); return }
+    if(action==='open-resume'){ e.preventDefault(); openResume(el.dataset.path); return }
   }
   root.onsubmit=(e)=>{
     const el=e.target.closest('[data-action]'); if(!el) return
