@@ -270,7 +270,7 @@ function computeReportsClientSide(rows, rejectActs, selectActs, ivRows, overdueR
 }
 async function loadReports(){
   const today=todayYMD()
-  if(!state.reportsFrom) state.reportsFrom='2020-01-01'
+  if(!state.reportsFrom) state.reportsFrom=today
   if(!state.reportsTo) state.reportsTo=today
   state.reportsLoading=true; render()
 
