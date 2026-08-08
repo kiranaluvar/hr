@@ -77,11 +77,10 @@ const SOURCE_TYPE_MAP = {
 }
 const WORK_MODES = ['WFH','WFO','Hybrid']
 const NOTICE_PERIODS = ['Immediate','15 Days','30 Days','45 Days','60 Days','90 Days']
-const REASON_FOR_CHANGE = ['Career Growth','Better Opportunity','Job Hunt','Not working']
 
 const DEPARTMENTS = ['Academy','Admin','Career Growth','Finance','Growth & Marketing','Operations','PEP','Product','Sales','Teacher Ops & Excellence','Tech & Product','Vendor Management']
 const SUB_DEPARTMENTS = ['Acquisition','Accounting/Finance','Backend-Frontend-Fullstack','Brand','Content & Creative','Curriculum','Customer Success','Data Analysis','Design','DevOps','Founder\'s Office','Learning & Development','Legal & Compliance','ORM','Payroll','People Operations','People Partner','Performance','Pre Sales - India','Pre Sales - Row','Pre Sales - US','Product Design','Product Management','Program Management','Quality Assurance','Retention','SEO / Growth','Sales - India','Sales - Row','Sales - US','Sales Operations','Student Experience & Refunds','Support','Talent Acquisition','Teacher Management & Engagement','URI','Vendor Management','Webinar & Partnership']
-const ROLES = ["Product Intern","Product Analyst","Senior Product Analyst","Associate Product Manager","Product Manager I","Product Manager II","Senior Product Manager","Group Product Manager","Design Intern","Graphic Designer","UI/UX Designer- I","UI/UX Designer- II","Senior UI/UX Designer","Lead - Design","Associate Director - Design","Director - Design","Growth Intern","Associate - Growth","Senior Associate - Growth","Assistant Manager - SEO","Assistant Manager - Growth","Manager - SEO","Manager - Growth","Senior Manager - SEO","Senior Manager - Growth","Associate Director - Growth","Creative Intern / Trainee","Associate Creative","Senior Associate - Creative","Assistant Manager - Creative","Manager - Creative","Senior Manager - Creative","Associate Director - Creative","Director - Creative","Associate Curriculum Developer","Curriculum Developer","Assistant Manager - Curriculum","Manager - Curriculum","Senior Manager - Curriculum","Associate Director - Curriculum","Director - Curriculum","Software Development Engineer I","Software Development Engineer II","Associate Tech Lead","Technology Lead","Engineering Manager","Associate Director - Technology","QA Engineer I","QA Engineer II","Associate Lead - QA","Lead - QA","Manager - QA","Associate Director - QA","Director - QA","DevOps Engineer I","DevOps Engineer II","Associate Lead - DevOps","Lead - DevOps","Tech Intern","Support Engineer I","Support Engineer II","Associate Lead - Tech Support","Lead - Tech Support","Manager - Tech Support","Sales Intern","Academic Associate","Academic Counselor","Senior Academic Counselor","Lead Academic Counselor","Senior Lead Academic Counselor","Principal Academic Counselor","Pre-Sales Intern","Learning Consultant","People Operations Intern","Associate - People Operations","Senior Associate - People Operations","Manager - People Operations","People Partner Intern","Associate - People Partner","Senior Associate - People Partner","Assistant Manager - People Partner","Talent Acquisition Intern","Associate - Talent Acquisition","Senior Associate - Talent Acquisition","Customer Success Intern","Customer Success Associate","Customer Success Lead","Customer Success - Senior Lead","Customer Success Manager","Customer Success Senior Manager","Associate Performance","Senior Associate - Performance","Assistant Manager - Performance","Manager - Performance","Senior Manager - Performance","Associate ORM","Senior Associate - ORM","Assistant Manager - ORM","Manager - ORM","Senior Manager - ORM","Founder's Office - Intern","Assistant Manager - Founder's Office","Founder's Office - Manager","Founder's Office - Senior Manager","Student Experience Intern","Student Experience Associate","Student Experience Coordinator","Student Support Specialist","Student Experience Manager","Finance / Accounts Intern","Finance / Accounts Associate","Senior Accounts / Finance Associate","Assistant Manager - Accounts / Finance","Manager - Accounts / Finance","Senior Manager - Accounts / Finance","Legal Associate","Senior Associate - Legal","Legal Counsel","Senior Legal Counsel","Senior Legal Manager","Payroll Associate","Senior Payroll Associate","Assistant Manager - Payroll","Assistant Manager - Sales","Associate Manager - Sales","Manager - Sales","Program Manager","Legal Manager","Business Finance Manager"]
+const ROLES = ["Product Intern","Product Analyst","Senior Product Analyst","Associate Product Manager","Product Manager I","Product Manager II","Senior Product Manager","Group Product Manager","Design Intern","Graphic Designer","UI/UX Designer- I","UI/UX Designer- II","Senior UI/UX Designer","Lead - Design","Associate Director - Design","Director - Design","Growth Intern","Associate - Growth","Senior Associate - Growth","Assistant Manager - SEO","Assistant Manager - Growth","Manager - SEO","Manager - Growth","Senior Manager - SEO","Senior Manager - Growth","Associate Director - Growth","Creative Intern / Trainee","Associate Creative","Senior Associate - Creative","Assistant Manager - Creative","Manager - Creative","Senior Manager - Creative","Associate Director - Creative","Director - Creative","Associate Curriculum Developer","Curriculum Developer","Assistant Manager - Curriculum","Manager - Curriculum","Senior Manager - Curriculum","Associate Director - Curriculum","Director - Curriculum","Software Development Engineer I","Software Development Engineer II","Associate Tech Lead","Technology Lead","Engineering Manager","Associate Director - Technology","QA Engineer I","QA Engineer II","Associate Lead - QA","Lead - QA","Manager - QA","Associate Director - QA","Director - QA","DevOps Engineer I","DevOps Engineer II","Associate Lead - DevOps","Lead - DevOps","Tech Intern","Support Engineer I","Support Engineer II","Associate Lead - Tech Support","Lead - Tech Support","Manager - Tech Support","Sales Intern","Academic Associate","Academic Counselor","Senior Academic Counselor","Lead Academic Counselor","Senior Lead Academic Counselor","Principal Academic Counselor","Pre-Sales Intern","Learning Consultant","People Operations Intern","Associate - People Operations","Senior Associate - People Operations","Manager - People Operations","People Partner Intern","Associate - People Partner","Senior Associate - People Partner","Assistant Manager - People Partner","Talent Acquisition Intern","Associate - Talent Acquisition","Senior Associate - Talent Acquisition","Customer Success Intern","Customer Success Associate","Customer Success Lead","Customer Success - Senior Lead","Customer Success Manager","Customer Success Senior Manager","Associate Performance","Senior Associate - Performance","Assistant Manager - Performance","Manager - Performance","Senior Manager - Performance","Associate ORM","Senior Associate - ORM","Assistant Manager - ORM","Manager - ORM","Senior Manager - ORM","Founder's Office - Intern","Assistant Manager - Founder's Office","Founder's Office - Manager","Founder's Office - Senior Manager","Student Experience Intern","Student Experience Associate","Student Experience Coordinator","Student Support Specialist","Student Experience Manager","Finance / Accounts Intern","Finance / Accounts Associate","Senior Accounts / Finance Associate","Assistant Manager - Accounts / Finance","Manager - Accounts / Finance","Senior Manager - Accounts / Finance","Legal Associate","Senior Associate - Legal","Legal Counsel","Senior Legal Counsel","Senior Legal Manager","Payroll Associate","Senior Payroll Associate","Assistant Manager - Payroll","Assistant Manager - Sales","Associate Manager - Sales","Manager - Sales","Program Manager","Legal Manager"]
 
 const STAGE_GROUP_STYLES = {
   'New':        { bg:'#DBEAFE', color:'#1E3A8A', border:'#BFDBFE' },
@@ -100,12 +99,6 @@ const ACTIVITY_TYPE_COLORS = {
   'Note':{border:'#78716C',dot:'bg-stone-500'},'Other':{border:'#78716C',dot:'bg-stone-500'},
 }
 const AVATAR_COLORS = ['bg-rose-500','bg-amber-500','bg-emerald-500','bg-cyan-500','bg-indigo-500','bg-fuchsia-500','bg-orange-500','bg-teal-500','bg-violet-500','bg-pink-500','bg-sky-500','bg-lime-600']
-const WORK_MODE_COLORS = {
-  'WFH':    { bg:'#EFF6FF', color:'#1D4ED8', bar:'#3B82F6' },
-  'WFO':    { bg:'#FFF7ED', color:'#C2410C', bar:'#F97316' },
-  'Hybrid': { bg:'#F5F3FF', color:'#6D28D9', bar:'#8B5CF6' },
-}
-const GROUPED_COLS = ['WFH','WFO']
 const PAGE_SIZE = 50
 const PIVOT_DIMS=[
   {key:'recruiter',label:'Recruiter'},
@@ -124,11 +117,9 @@ const PIVOT_DIMS=[
 const state = {
   session: null, profile: null, view: 'loading',
   candidates: [], candidatesTotal: 0, candidatesPage: 1,
-  filters: { search:'', stageGroup:'', stageSub:'', recruiterId:'', mineOnly:false, departments:[], subDepartments:[], roles:[], sources:[], workMode:'', noticePeriod:'', archived:'', createdFrom:todayYMD(), createdTo:todayYMD() },
+  filters: { search:'', stageGroup:'', stageSub:'', recruiterId:'', mineOnly:false, departments:[], roles:[], sources:[], workMode:'', noticePeriod:'', archived:'', createdFrom:'', createdTo:'' },
   openFilter: null, filterSearch: {},
-  reportsData: null, reportsFrom: '', reportsTo: '', reportsLoading: false,
-  reportsFilters: { search:'', stageGroup:'', stageSub:'', departments:[], subDepartments:[], roles:[], sources:[], workMode:'', noticePeriod:'', recruiterId:'', mineOnly:false, archived:'' },
-  reportsFilterSearch: {}, reportsOpenFilter: null,
+  reportsData: null, reportsFrom: '', reportsTo: '',
   selectedIds: new Set(),
   currentCandidate: null, activities: [], editingCandidate: false,
   users: [], countsByRecruiter: {},
@@ -140,9 +131,7 @@ const state = {
   newDraft: {},
   exporting: false, saving: false, flash: null, bulkPanel: null,
   sidebarOpen: false, chartInstances: {},
-  providerToken: null, savingMeet: false,
-  pivot: { rows:'recruiter', cols:'stage_group', raw:null, matrix:null, rowKeys:[], colKeys:[], rowTotals:{}, colTotals:{}, grand:0, maxCell:0, grouped:null },
-  groupedOpen: {},
+  pivot: { rows:'recruiter', cols:'stage_group', dept:[], role:[], source:[], recruiterId:'', stageGroup:'', workMode:'', loading:false, raw:null, matrix:null, rowKeys:[], colKeys:[], rowTotals:{}, colTotals:{}, grand:0, maxCell:0 },
 }
 
 // ── helpers ──────────────────────────────────────────────────────
@@ -160,7 +149,6 @@ function avatar(id,size='sm'){ const u=userById(id); const name=u?.full_name||u?
 function avatarWithName(id){ const name=userName(id); if(!name) return '<span class="text-stone-400 text-xs">Unassigned</span>'; return '<div class="flex items-center gap-2">'+avatar(id)+'<span class="text-sm text-stone-700 truncate">'+esc(name)+'</span></div>' }
 function isAdmin(){ return state.profile?.role==='admin' }
 function canEdit(c){ return isAdmin() || (c && c.recruiter_user_id===state.session?.user?.id) }
-function canReassign(c){ return isAdmin() || !c.recruiter_user_id || c.recruiter_user_id===state.session?.user?.id }
 function flash(kind,msg){ state.flash={kind,msg}; render(); setTimeout(()=>{ state.flash=null; render() },3500) }
 function cleanPhone(n){ if(!n) return null; const d=String(n).replace(/\D/g,''); if(!d) return null; if(d.length===10) return '+91'+d; if(d.length===12&&d.startsWith('91')) return '+'+d; if(d.length>10) return '+'+d; return null }
 
@@ -176,7 +164,6 @@ function applyCandidateFilters(q){
   if(f.stageSub && f.stageSub!=='__archived__') q=q.eq('stage_sub',f.stageSub)
   if(f.stageSub==='__archived__') q=q.eq('is_archived',true)
   if(f.departments.length) q=q.in('department',f.departments)
-  if(f.subDepartments.length) q=q.in('sub_department',f.subDepartments)
   if(f.roles.length) q=q.in('role',f.roles)
   if(f.sources.length) q=q.in('source_detail',f.sources)
   if(f.workMode) q=q.eq('work_mode',f.workMode)
@@ -204,96 +191,7 @@ async function loadCandidate(id){ const {data,error}=await supabase.from('candid
 async function loadActivities(id){ const {data}=await supabase.from('activities').select('*').eq('candidate_id',id).order('created_at',{ascending:false}).limit(100); state.activities=data||[] }
 async function loadInterviews(id){ const {data}=await supabase.from('interview_schedule').select('*').eq('candidate_id',id).order('interview_date',{ascending:false}); state.interviews=data||[] }
 async function loadAuditLog(id){ const {data}=await supabase.from('audit_log').select('*').eq('table_name','candidates').eq('record_id',String(id)).order('changed_at',{ascending:false}).limit(200); state.auditLog=data||[] }
-function applyReportsFilters(q){
-  const f=state.reportsFilters
-  if(f.search){ const s=f.search.replace(/[%_]/g,''); q=q.or('candidate_name.ilike.%'+s+'%,email.ilike.%'+s+'%,contact_no.ilike.%'+s+'%,current_company.ilike.%'+s+'%') }
-  if(f.stageGroup) q=q.eq('stage_group',f.stageGroup)
-  if(f.stageSub && f.stageSub!=='__archived__') q=q.eq('stage_sub',f.stageSub)
-  if(f.stageSub==='__archived__') q=q.eq('is_archived',true)
-  if(f.departments.length) q=q.in('department',f.departments)
-  if(f.subDepartments.length) q=q.in('sub_department',f.subDepartments)
-  if(f.roles.length) q=q.in('role',f.roles)
-  if(f.sources.length) q=q.in('source_detail',f.sources)
-  if(f.workMode) q=q.eq('work_mode',f.workMode)
-  if(f.noticePeriod) q=q.eq('notice_period',f.noticePeriod)
-  if(f.archived==='yes') q=q.eq('is_archived',true)
-  if(f.archived==='no') q=q.eq('is_archived',false)
-  if(f.mineOnly) q=q.eq('recruiter_user_id',state.session.user.id)
-  else if(f.recruiterId==='unassigned') q=q.is('recruiter_user_id',null)
-  else if(f.recruiterId) q=q.eq('recruiter_user_id',f.recruiterId)
-  if(state.reportsFrom) q=q.gte('created_at',state.reportsFrom)
-  if(state.reportsTo) q=q.lte('created_at',state.reportsTo+'T23:59:59')
-  return q
-}
-async function fetchAllPages(build){
-  const all=[]; const pageSize=1000; let from=0
-  while(true){
-    const {data,error}=await build(from,from+pageSize-1)
-    if(error){ return {all,error} }
-    all.push(...(data||[])); if(!data||data.length<pageSize) break; from+=pageSize
-  }
-  return {all,error:null}
-}
-function computeReportsClientSide(rows, rejectActs, selectActs, ivRows, overdueRows){
-  let inProcess=0, offers=0, rejected=0
-  const byDay={}, funnelMap={}, bySource={}, byDept={}, byRole={}, recruiterMap={}, candCreated={}, candRecruiter={}
-  rows.forEach(c=>{
-    candCreated[c.id]=c.created_at; candRecruiter[c.id]=c.recruiter_user_id
-    const day=(c.created_at||'').slice(0,10); if(day) byDay[day]=(byDay[day]||0)+1
-    if(!c.is_archived) funnelMap[c.stage_group]=(funnelMap[c.stage_group]||0)+1
-    const terminal=['Offer','Closed'].includes(c.stage_group)
-    if(!c.is_archived && !terminal) inProcess++
-    if(c.final_status==='Final Select') offers++
-    if(c.final_status==='Rejected'||c.final_status==='Dropped') rejected++
-    const sd=c.source_detail||'—'
-    if(!bySource[sd]) bySource[sd]={total:0,offers:0}
-    bySource[sd].total++; if(c.final_status==='Final Select') bySource[sd].offers++
-    if(!c.is_archived && !terminal){ const dep=c.department||'—'; byDept[dep]=(byDept[dep]||0)+1; const rl=c.role||'—'; byRole[rl]=(byRole[rl]||0)+1 }
-    const rid=c.recruiter_user_id
-    if(rid){ if(!recruiterMap[rid]) recruiterMap[rid]={sourced:0,owned:0,offers:0,interviews:0,overdue:0}; recruiterMap[rid].sourced++; recruiterMap[rid].owned++; if(c.final_status==='Final Select') recruiterMap[rid].offers++ }
-  })
-  const reasonMap={}
-  rejectActs.forEach(a=>{ const k=a.reject_reason==='Other'?(a.reject_reason_other||'Other'):a.reject_reason; reasonMap[k]=(reasonMap[k]||0)+1 })
-  let selSum=0, selN=0
-  selectActs.forEach(a=>{ const created=candCreated[a.candidate_id]; if(created&&a.completed_at){ const d=(new Date(a.completed_at)-new Date(created))/86400000; if(d>=0){ selSum+=d; selN++ } } })
-  ivRows.forEach(iv=>{ const rid=candRecruiter[iv.candidate_id]; if(rid&&recruiterMap[rid]) recruiterMap[rid].interviews++ })
-  overdueRows.forEach(o=>{ if(o.user_id&&recruiterMap[o.user_id]) recruiterMap[o.user_id].overdue++ })
-  const tiles={ sourced:rows.length, in_process:inProcess, offers, rejected, interviews_scheduled:ivRows.length, avg_days_to_select: selN?Math.round(selSum/selN):0 }
-  const daily_sourced=Object.entries(byDay).map(([day,n])=>({day,n}))
-  const funnel=Object.entries(funnelMap).map(([stage,n])=>({stage,n}))
-  const recruiter_stats=Object.entries(recruiterMap).map(([uid,v])=>{ const u=userById(uid)||{}; return { user_id:uid, full_name:u.full_name, email:u.email, ...v } })
-  const source_effectiveness=Object.entries(bySource).map(([source,v])=>({source,total:v.total,offers:v.offers,pct:v.total?Math.round(v.offers/v.total*1000)/10:0})).sort((a,b)=>b.total-a.total)
-  const by_department=Object.entries(byDept).map(([department,n])=>({department,n})).sort((a,b)=>b.n-a.n)
-  const by_role=Object.entries(byRole).map(([role,n])=>({role,n})).sort((a,b)=>b.n-a.n).slice(0,15)
-  const reject_reasons=Object.entries(reasonMap).map(([reason,n])=>({reason,n}))
-  return { tiles, daily_sourced, funnel, recruiter_stats, source_effectiveness, by_department, by_role, reject_reasons }
-}
-async function loadReports(){
-  const today=todayYMD()
-  if(!state.reportsFrom) state.reportsFrom=today
-  if(!state.reportsTo) state.reportsTo=today
-  state.reportsLoading=true; render()
-
-  const candCols='id,recruiter_user_id,department,sub_department,role,source_detail,source_type,stage_group,stage_sub,work_mode,notice_period,final_status,is_archived,created_at'
-  const {all:rows,error:candErr}=await fetchAllPages((lo,hi)=>applyReportsFilters(supabase.from('candidates').select(candCols).order('created_at',{ascending:false})).range(lo,hi))
-  if(candErr){ state.reportsLoading=false; flash('err',candErr.message); render(); return }
-  const idSet=new Set(rows.map(c=>c.id))
-
-  const {all:rejectActsAll}=await fetchAllPages((lo,hi)=>{ let q=supabase.from('activities').select('candidate_id,reject_reason,reject_reason_other,completed_at').not('reject_reason','is',null); if(state.reportsFrom) q=q.gte('completed_at',state.reportsFrom); if(state.reportsTo) q=q.lte('completed_at',state.reportsTo+'T23:59:59'); return q.range(lo,hi) })
-  const {all:selectActsAll}=await fetchAllPages((lo,hi)=>{ let q=supabase.from('activities').select('candidate_id,completed_at').eq('stage_sub_at_time','Final Select'); if(state.reportsFrom) q=q.gte('completed_at',state.reportsFrom); if(state.reportsTo) q=q.lte('completed_at',state.reportsTo+'T23:59:59'); return q.range(lo,hi) })
-  const {all:ivRowsAll}=await fetchAllPages((lo,hi)=>{ let q=supabase.from('interview_schedule').select('candidate_id,interview_date'); if(state.reportsFrom) q=q.gte('interview_date',state.reportsFrom); if(state.reportsTo) q=q.lte('interview_date',state.reportsTo); return q.range(lo,hi) })
-  const {all:overdueRowsAll}=await fetchAllPages((lo,hi)=>supabase.from('activities').select('candidate_id,user_id').is('completed_at',null).lt('scheduled_for',today).range(lo,hi))
-
-  const rejectActs=rejectActsAll.filter(a=>idSet.has(a.candidate_id))
-  const selectActs=selectActsAll.filter(a=>idSet.has(a.candidate_id))
-  const ivRows=ivRowsAll.filter(r=>idSet.has(r.candidate_id))
-  const overdueRows=overdueRowsAll.filter(r=>idSet.has(r.candidate_id))
-
-  state.reportsData=computeReportsClientSide(rows,rejectActs,selectActs,ivRows,overdueRows)
-  state.pivot.raw=rows; computePivot(rows); state.pivot.grouped=computeGroupedBreakdown(rows)
-  state.reportsLoading=false
-  render(); initReportsCharts()
-}
+async function loadReports(){ const today=todayYMD(); if(!state.reportsFrom) state.reportsFrom='2020-01-01'; if(!state.reportsTo) state.reportsTo=today; const {data,error}=await supabase.rpc('reports_data',{d_from:state.reportsFrom,d_to:state.reportsTo}); if(error){ flash('err',error.message); return } state.reportsData=data||null }
 async function loadMyOverdueCount(){ const {count}=await supabase.from('activities').select('*',{count:'exact',head:true}).eq('user_id',state.session.user.id).is('completed_at',null).lt('scheduled_for',todayYMD()); state.myOverdueCount=count||0 }
 
 async function loadNextActions(){
@@ -321,7 +219,7 @@ async function loadNextActions(){
 }
 
 // ── auth ─────────────────────────────────────────────────────────
-async function login(){ const {error}=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname, scopes:'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.file', queryParams:{access_type:'offline',prompt:'consent'}}}); if(error) flash('err',error.message) }
+async function login(){ const {error}=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}}); if(error) flash('err',error.message) }
 async function logout(){ await supabase.auth.signOut(); window.location.hash='' }
 
 function celebrate(){ const colors=['#6366F1','#A855F7','#EC4899','#10B981','#F59E0B','#3B82F6']; for(let i=0;i<90;i++){ const size=6+Math.random()*6; const isCircle=Math.random()>0.5; const p=document.createElement('div'); p.className='confetti-piece'; p.style.cssText=`left:${Math.random()*100}vw;width:${size}px;height:${size*(isCircle?1:0.5)}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${isCircle?'50%':'2px'};--drift:${(Math.random()-0.5)*300}px;--spin:${(Math.random()>0.5?1:-1)*(360+Math.random()*720)}deg;animation-duration:${2.5+Math.random()*1.5}s;animation-delay:${Math.random()*0.4}s;`; document.body.appendChild(p); setTimeout(()=>p.remove(),4500) } }
@@ -348,6 +246,10 @@ async function submitActivity(form){
   const rejectOther=form.reject_reason_other?.value?.trim()||null
   if(newSub && isRejectSub(newSub) && !rejectReason){ flash('err','Select a reason for the rejection / drop.'); return }
 
+  const noFollowup=isTerminalSub(effSub)||c.is_archived
+  const needFollowup=!noFollowup
+  if(needFollowup && !scheduledFor){ flash('err','Set the next action date, or move to a terminal stage (Reject / Drop / Final Select).'); return }
+
   state.saving=true; render()
   const nowIso=new Date().toISOString()
   const round=roundFromSub(effSub)
@@ -368,8 +270,8 @@ async function submitActivity(form){
   await supabase.from('activities').update({completed_at:nowIso,outcome:'Closed by '+activityType+' activity'})
     .eq('candidate_id',c.id).eq('user_id',state.session.user.id).is('completed_at',null).not('scheduled_for','is',null)
 
-  // create next action (optional, regardless of stage)
-  if(scheduledFor){
+  // create next action
+  if(scheduledFor && needFollowup){
     await supabase.from('activities').insert({ candidate_id:c.id, user_id:state.session.user.id, activity_type:activityType,
       notes:'Next action scheduled from '+fmtDateOnly(nowIso), scheduled_for:scheduledFor, completed_at:null,
       stage_group_at_time:effGroup, stage_sub_at_time:effSub })
@@ -392,7 +294,7 @@ async function submitActivity(form){
 
   await Promise.all([loadCandidate(c.id),loadActivities(c.id),loadInterviews(c.id),loadMyOverdueCount()])
   state.saving=false
-  flash('ok', scheduledFor?'Activity logged · next action scheduled':'Activity logged')
+  flash('ok', noFollowup?'Activity logged':'Activity logged · next action scheduled')
   if(newSub==='Final Select') celebrate()
   render()
 }
@@ -450,8 +352,8 @@ async function saveCandidateEdits(form){
   flash('ok','Candidate updated'); render()
 }
 
-async function reassignRecruiter(newId){ const c=state.currentCandidate; if(!c||!canReassign(c)) return; const patch={recruiter_user_id:newId||null}; if(newId) patch.created_at=new Date().toISOString(); const {error}=await supabase.from('candidates').update(patch).eq('id',c.id); if(error){ flash('err',error.message); return } await loadCandidate(c.id); flash('ok','Recruiter updated'); render() }
-async function takeOwnership(){ const {error}=await supabase.from('candidates').update({recruiter_user_id:state.session.user.id,created_at:new Date().toISOString()}).eq('id',state.currentCandidate.id); if(error){ flash('err',error.message); return } await loadCandidate(state.currentCandidate.id); flash('ok','You now own this candidate'); render() }
+async function reassignRecruiter(newId){ if(!isAdmin()) return; const patch={recruiter_user_id:newId||null}; if(newId) patch.created_at=new Date().toISOString(); const {error}=await supabase.from('candidates').update(patch).eq('id',state.currentCandidate.id); if(error){ flash('err',error.message); return } await loadCandidate(state.currentCandidate.id); flash('ok','Recruiter updated'); render() }
+async function takeOwnership(){ const {error}=await supabase.from('candidates').update({recruiter_user_id:state.session.user.id, created_at:new Date().toISOString()}).eq('id',state.currentCandidate.id); if(error){ flash('err',error.message); return } await loadCandidate(state.currentCandidate.id); flash('ok','You now own this candidate'); render() }
 async function setArchived(){ const reason=document.getElementById('archive-reason')?.value?.trim(); if(!reason){ flash('err','Add a reason first'); return } const {error}=await supabase.from('candidates').update({is_archived:true,archived_reason:reason,archived_by:state.session.user.id,archived_at:new Date().toISOString()}).eq('id',state.currentCandidate.id); if(error){ flash('err',error.message); return } await loadCandidate(state.currentCandidate.id); flash('ok','Candidate archived'); render() }
 async function clearArchived(){ const {error}=await supabase.from('candidates').update({is_archived:false,archived_reason:null,archived_by:null,archived_at:null}).eq('id',state.currentCandidate.id); if(error){ flash('err',error.message); return } await loadCandidate(state.currentCandidate.id); flash('ok','Candidate restored'); render() }
 async function bulkReassign(newId){ if(!isAdmin()) return; const ids=Array.from(state.selectedIds); if(!ids.length) return; const patch={recruiter_user_id:newId||null}; if(newId) patch.created_at=new Date().toISOString(); const {error}=await supabase.from('candidates').update(patch).in('id',ids); if(error){ flash('err',error.message); return } flash('ok','Reassigned '+ids.length+' candidate'+(ids.length===1?'':'s')); state.selectedIds.clear(); state.bulkPanel=null; await Promise.all([loadCandidates(),loadCountsByRecruiter()]); render() }
@@ -494,7 +396,7 @@ function renderSidebar(){
   const onActions=hash==='/next-actions', onTeam=hash==='/team', onReports=hash==='/reports'
   const item=(label,href,active,badge)=>'<a href="'+href+'" class="flex items-center justify-between px-3 py-2 rounded-md text-sm transition '+(active?'bg-indigo-500/15 text-white font-medium':'text-stone-300 hover:bg-stone-800/50 hover:text-white')+'"><span>'+esc(label)+'</span>'+(badge||'')+'</a>'
   const badge=state.myOverdueCount>0?'<span class="bg-rose-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full">'+state.myOverdueCount+'</span>':''
-  return '<aside class="fixed left-0 top-[3px] bottom-0 w-60 bg-stone-900 text-stone-100 px-4 py-5 flex flex-col z-50 transition-transform '+(state.sidebarOpen?'translate-x-0':'-translate-x-full lg:translate-x-0')+'"><div class="px-3 mb-6"><div class="text-[10px] font-semibold tracking-widest uppercase gradient-text">BrightChamps</div><div class="text-base font-semibold text-white mt-0.5">Recruitment CRM</div></div><nav class="space-y-1 flex-1">'+item('Candidates','#/candidates',onCands)+item('My pipeline','#/next-actions',onActions,badge)+item('Reports','#/reports',onReports)+(isAdmin()?item('Team','#/team',onTeam):'')+'</nav><div class="border-t border-stone-800 pt-3 px-2"><div class="flex items-center gap-2.5">'+avatar(state.session.user.id,'md')+'<div class="min-w-0 flex-1"><div class="text-xs text-stone-100 truncate font-medium">'+esc(state.profile?.full_name||state.session.user.email)+'</div><div class="text-[10px] font-semibold uppercase tracking-wider '+(isAdmin()?'text-indigo-300':'text-stone-400')+'">'+(isAdmin()?'Admin':'Recruiter')+'</div></div></div><button data-action="logout" class="mt-2 w-full text-xs text-stone-400 hover:text-white text-left px-1">Sign out</button></div></aside>'
+  return '<aside class="fixed left-0 top-[3px] bottom-0 w-60 bg-stone-900 text-stone-100 px-4 py-5 flex flex-col z-50 transition-transform '+(state.sidebarOpen?'translate-x-0':'-translate-x-full lg:translate-x-0')+'"><div class="px-3 mb-6"><div class="text-[10px] font-semibold tracking-widest uppercase gradient-text">BrightChamps</div><div class="text-base font-semibold text-white mt-0.5">Recruitment CRM</div></div><nav class="space-y-1 flex-1">'+item('Candidates','#/candidates',onCands)+item('My pipeline','#/next-actions',onActions,badge)+(isAdmin()?item('Reports','#/reports',onReports):'')+(isAdmin()?item('Team','#/team',onTeam):'')+'</nav><div class="border-t border-stone-800 pt-3 px-2"><div class="flex items-center gap-2.5">'+avatar(state.session.user.id,'md')+'<div class="min-w-0 flex-1"><div class="text-xs text-stone-100 truncate font-medium">'+esc(state.profile?.full_name||state.session.user.email)+'</div><div class="text-[10px] font-semibold uppercase tracking-wider '+(isAdmin()?'text-indigo-300':'text-stone-400')+'">'+(isAdmin()?'Admin':'Recruiter')+'</div></div></div><button data-action="logout" class="mt-2 w-full text-xs text-stone-400 hover:text-white text-left px-1">Sign out</button></div></aside>'
 }
 function renderBreadcrumb(){
   const hash=window.location.hash.slice(1)||'/'
@@ -548,32 +450,30 @@ function renderCandidatesList(){
   const stageSubSelect=f.stageGroup?'<select data-action="filter-stage-sub-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">All sub-stages</option>'+subOpts+'<option value="__archived__"'+(f.stageSub==='__archived__'?' selected':'')+'>⊘ Archived</option></select>':''
 
   const rows=state.candidates.length===0
-    ? '<tr><td colspan="6" class="text-center text-stone-400 py-12 text-sm">No candidates match these filters.</td></tr>'
+    ? '<tr><td colspan="7" class="text-center text-stone-400 py-12 text-sm">No candidates match these filters.</td></tr>'
     : state.candidates.map(c=>{
       const sel=state.selectedIds.has(c.id)
-      return '<tr class="hover:bg-stone-50 border-b border-stone-100'+(sel?' bg-indigo-50/40':'')+'" data-action="open-candidate" data-id="'+esc(c.id)+'"><td class="py-2 px-4 w-10" data-no-row-click><input type="checkbox" data-action="toggle-select" data-id="'+esc(c.id)+'" class="rounded border-stone-300 text-indigo-600"'+(sel?' checked':'')+'></td><td class="py-3 px-3 font-mono text-xs text-stone-400">'+esc(c.id)+'</td><td class="py-3 px-4"><div class="font-medium text-stone-900">'+esc(c.candidate_name||'—')+(c.is_archived?' <span class="text-[10px] font-semibold text-stone-500 bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded ml-1">Archived</span>':'')+'</div><div class="text-xs text-stone-500">'+esc([c.role,c.department].filter(Boolean).join(' · '))+'</div><div class="text-[11px] text-stone-400 mt-0.5">Sourced '+esc(fmtDateTime(c.created_at))+'</div></td><td class="py-3 px-4">'+stagePill(c.stage_group,c.stage_sub)+'</td><td class="py-3 px-4">'+avatarWithName(c.recruiter_user_id)+'</td><td class="py-3 px-4 text-right text-stone-300">›</td></tr>'
+      return '<tr class="hover:bg-stone-50 border-b border-stone-100'+(sel?' bg-indigo-50/40':'')+'" data-action="open-candidate" data-id="'+esc(c.id)+'"><td class="py-2 px-4 w-10" data-no-row-click><input type="checkbox" data-action="toggle-select" data-id="'+esc(c.id)+'" class="rounded border-stone-300 text-indigo-600"'+(sel?' checked':'')+'></td><td class="py-3 px-3 font-mono text-xs text-stone-400">'+esc(c.id)+'</td><td class="py-3 px-4"><div class="font-medium text-stone-900">'+esc(c.candidate_name||'—')+(c.is_archived?' <span class="text-[10px] font-semibold text-stone-500 bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded ml-1">Archived</span>':'')+'</div><div class="text-xs text-stone-500">'+esc([c.role,c.department].filter(Boolean).join(' · '))+'</div></td><td class="py-3 px-4">'+stagePill(c.stage_group,c.stage_sub)+'</td><td class="py-3 px-4">'+avatarWithName(c.recruiter_user_id)+'</td><td class="py-3 px-4 text-sm text-stone-500">'+esc(fmtDate(c.last_activity_at)||'No activity')+'</td><td class="py-3 px-4 text-right text-stone-300">›</td></tr>'
     }).join('')
 
   const bulkBar=state.selectedIds.size>0?'<div class="mb-3 flex items-center gap-3 bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2.5"><span class="text-sm font-medium text-indigo-800">'+state.selectedIds.size+' selected</span>'+(isAdmin()?'<select data-action="bulk-reassign-change" class="text-sm px-2.5 py-1 border border-indigo-200 rounded-md bg-white focus-ring"><option value="">Reassign to…</option><option value="UNASSIGN">Unassign</option>'+state.users.map(u=>'<option value="'+esc(u.user_id)+'">'+esc(u.full_name||u.email)+'</option>').join('')+'</select><button data-action="bulk-delete-confirm" class="text-sm text-rose-600 hover:text-rose-800 font-medium">Delete</button>':'')+'<button data-action="clear-selection" class="text-sm text-stone-500 hover:text-stone-800 ml-auto">Clear</button></div>':''
 
-  const deleteModal=state.bulkPanel==='delete-confirm'?'<div class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4" data-action="close-modal"><div class="bg-white rounded-lg p-6 max-w-sm w-full"><h3 class="text-base font-semibold text-stone-900 mb-2">Delete '+state.selectedIds.size+' candidate'+(state.selectedIds.size===1?'':'s')+'?</h3><p class="text-sm text-stone-500 mb-4">This permanently removes them and their activity. Type <span class="font-mono font-semibold">delete '+state.selectedIds.size+'</span> to confirm.</p><input type="text" data-action="bulk-delete-input" placeholder="delete '+state.selectedIds.size+'" class="w-full text-sm px-3 py-2 border border-stone-200 rounded-md mb-4 focus-ring"><div class="flex gap-2 justify-end"><button data-action="cancel-bulk" class="text-sm text-stone-600 px-3 py-1.5">Cancel</button><button id="bulk-delete-execute" data-action="bulk-delete-execute" disabled class="text-sm bg-rose-600 disabled:bg-rose-300 text-white px-3 py-1.5 rounded-md font-medium">Delete</button></div></div></div>':''
+  const deleteModal=state.bulkPanel==='delete-confirm'?'<div class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4" data-action="close-modal"><div class="bg-white rounded-lg p-6 max-w-sm w-full" onclick="event.stopPropagation()"><h3 class="text-base font-semibold text-stone-900 mb-2">Delete '+state.selectedIds.size+' candidate'+(state.selectedIds.size===1?'':'s')+'?</h3><p class="text-sm text-stone-500 mb-4">This permanently removes them and their activity. Type <span class="font-mono font-semibold">delete '+state.selectedIds.size+'</span> to confirm.</p><input type="text" data-action="bulk-delete-input" placeholder="delete '+state.selectedIds.size+'" class="w-full text-sm px-3 py-2 border border-stone-200 rounded-md mb-4 focus-ring"><div class="flex gap-2 justify-end"><button data-action="cancel-bulk" class="text-sm text-stone-600 px-3 py-1.5">Cancel</button><button id="bulk-delete-execute" data-action="bulk-delete-execute" disabled class="text-sm bg-rose-600 disabled:bg-rose-300 text-white px-3 py-1.5 rounded-md font-medium">Delete</button></div></div></div>':''
 
   return '<div class="mb-5 flex items-end justify-between flex-wrap gap-3"><div><h1 class="text-xl font-semibold tracking-tight text-stone-900">Candidates</h1><p class="text-sm text-stone-500 mt-0.5">'+state.candidatesTotal.toLocaleString()+' in pipeline'+(state.candidatesTotal>0?' · showing '+start+'–'+end:'')+'</p></div>'+(isAdmin()?'<button data-action="export-csv"'+(state.exporting?' disabled':'')+' class="text-sm border border-stone-200 hover:border-stone-400 text-stone-700 px-3 py-1.5 rounded-md transition">'+(state.exporting?'Exporting…':'Export CSV')+'</button>':'')+'</div>'
     + deleteModal
     + '<div class="flex flex-wrap items-center gap-2 mb-4"><input type="text" data-action="filter-search-input" value="'+esc(f.search)+'" placeholder="Search name, email, phone, company…" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring w-64">'
     + '<select data-action="filter-stage-group-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">All stages</option>'+STAGE_GROUPS.map(g=>'<option value="'+esc(g)+'"'+(f.stageGroup===g?' selected':'')+'>'+esc(g)+'</option>').join('')+'</select>'+stageSubSelect
     + multiSelectDropdown('departments','All departments',DEPARTMENTS.map(d=>({value:d,label:d})),f.departments,{searchable:true})
-    + multiSelectDropdown('subDepartments','All sub-departments',SUB_DEPARTMENTS.map(s=>({value:s,label:s})),f.subDepartments,{searchable:true})
     + multiSelectDropdown('roles','All roles',ROLES.map(r=>({value:r,label:r})),f.roles,{searchable:true})
     + multiSelectDropdown('sources','All sources',SOURCE_DETAILS.map(s=>({value:s,label:s})),f.sources,{searchable:true})
     + '<select data-action="filter-workmode-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Any work mode</option>'+WORK_MODES.map(w=>'<option value="'+esc(w)+'"'+(f.workMode===w?' selected':'')+'>'+esc(w)+'</option>').join('')+'</select>'
     + '<select data-action="filter-notice-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Any notice</option>'+NOTICE_PERIODS.map(nn=>'<option value="'+esc(nn)+'"'+(f.noticePeriod===nn?' selected':'')+'>'+esc(nn)+'</option>').join('')+'</select>'
-    + '<span class="text-[10px] font-semibold text-stone-500 uppercase tracking-wider">Sourced</span><input type="date" value="'+esc(f.createdFrom)+'" data-action="filter-created-from-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring" title="Sourced from"><span class="text-stone-400">–</span><input type="date" value="'+esc(f.createdTo)+'" data-action="filter-created-to-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring" title="Sourced to">'
     + '<select data-action="filter-recruiter-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"'+(f.mineOnly?' disabled':'')+'><option value="">All recruiters</option><option value="unassigned"'+(f.recruiterId==='unassigned'?' selected':'')+'>Unassigned</option>'+recruiterOpts+'</select>'
     + '<button data-action="toggle-mine" class="text-sm px-3 py-1.5 border rounded-md transition '+(f.mineOnly?'border-indigo-300 bg-indigo-50 text-indigo-700':'border-stone-200 text-stone-700')+'">Mine only</button>'
     + '<button data-action="clear-filters" class="text-sm text-stone-500 hover:text-stone-800 px-2">Clear</button></div>'
     + bulkBar
-    + '<div class="bg-white border border-stone-200 rounded-lg overflow-hidden"><div class="overflow-x-auto"><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="py-2.5 px-4 w-10"><input type="checkbox" data-action="toggle-select-all" class="rounded border-stone-300 text-indigo-600"'+(allSel?' checked':'')+'></th><th class="py-2.5 px-3">ID</th><th class="py-2.5 px-4">Candidate</th><th class="py-2.5 px-4">Stage</th><th class="py-2.5 px-4">Recruiter</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'
+    + '<div class="bg-white border border-stone-200 rounded-lg overflow-hidden"><div class="overflow-x-auto"><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="py-2.5 px-4 w-10"><input type="checkbox" data-action="toggle-select-all" class="rounded border-stone-300 text-indigo-600"'+(allSel?' checked':'')+'></th><th class="py-2.5 px-3">ID</th><th class="py-2.5 px-4">Candidate</th><th class="py-2.5 px-4">Stage</th><th class="py-2.5 px-4">Recruiter</th><th class="py-2.5 px-4">Last activity</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'
     + '<div class="mt-4 flex items-center justify-between"><div class="text-sm text-stone-500">Page '+page+' of '+totalPages+'</div><div class="flex gap-2"><button data-action="page-prev"'+(page<=1?' disabled':'')+' class="text-sm px-3 py-1.5 border border-stone-200 rounded-md disabled:opacity-40 hover:border-stone-400">Previous</button><button data-action="page-next"'+(page>=totalPages?' disabled':'')+' class="text-sm px-3 py-1.5 border border-stone-200 rounded-md disabled:opacity-40 hover:border-stone-400">Next</button></div></div>'
 }
 
@@ -598,43 +498,28 @@ function renderCandidateDetail(){
     return '<div class="py-3 border-b border-stone-100 last:border-0" style="border-left:2px solid '+st.border+';padding-left:12px;margin-left:2px"><div class="flex items-center justify-between gap-3 flex-wrap"><div class="flex items-center gap-2"><span class="text-sm font-medium text-stone-900">'+esc(a.activity_type)+'</span>'+(pending?'<span class="text-[10px] font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Pending · '+esc(fmtDateOnly(a.scheduled_for))+'</span>':'')+'</div><div class="text-xs text-stone-400">'+esc(fmtDate(a.completed_at||a.created_at))+' · '+esc((userName(a.user_id)||'').split(' ')[0])+'</div></div>'+(a.outcome?'<div class="text-sm text-stone-700 mt-1">'+esc(a.outcome)+'</div>':'')+(a.notes?'<div class="text-xs text-stone-500 mt-1 whitespace-pre-wrap">'+esc(a.notes)+'</div>':'')+(bits.length?'<div class="text-xs text-stone-400 mt-1">'+bits.join(' · ')+'</div>':'')+'</div>'
   }).join('')
 
-  return banner+'<div class="mb-5 flex items-start justify-between gap-4 flex-wrap"><div><div class="text-xs text-stone-400 font-mono mb-1">ID '+esc(c.id)+'</div><h1 class="text-2xl font-semibold tracking-tight text-stone-900">'+esc(c.candidate_name||'Unnamed candidate')+(c.is_archived?' <span class="text-sm font-medium text-stone-600 bg-stone-100 border border-stone-200 px-2 py-0.5 rounded-md ml-2">Archived</span>':'')+'</h1><div class="text-sm text-stone-500 mt-1">'+esc([c.role,c.department,c.current_location].filter(Boolean).join(' · '))+'</div></div><div class="flex items-center gap-3 flex-wrap justify-end">'+stagePill(c.stage_group,c.stage_sub)+ownerSlot+'</div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><div class="lg:col-span-1 space-y-6">'+renderActivityForm(c)+renderMeetPanel(c)+renderArchivePanel(c)+(canReassign(c)?renderAdminPanel(userOpts):'')+'</div><div class="lg:col-span-2 space-y-6">'+(state.editingCandidate?renderCandidateEditForm(c):renderCandidateFields(c,editable))+renderInterviewSection()+'<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">Activity timeline <span class="text-stone-400 font-normal">('+state.activities.length+')</span></h2></header><div class="p-4">'+activityItems+'</div></section>'+renderAuditLogSection(c)+'</div></div>'
+  return banner+'<div class="mb-5 flex items-start justify-between gap-4 flex-wrap"><div><div class="text-xs text-stone-400 font-mono mb-1">ID '+esc(c.id)+'</div><h1 class="text-2xl font-semibold tracking-tight text-stone-900">'+esc(c.candidate_name||'Unnamed candidate')+(c.is_archived?' <span class="text-sm font-medium text-stone-600 bg-stone-100 border border-stone-200 px-2 py-0.5 rounded-md ml-2">Archived</span>':'')+'</h1><div class="text-sm text-stone-500 mt-1">'+esc([c.role,c.department,c.current_location].filter(Boolean).join(' · '))+'</div></div><div class="flex items-center gap-3 flex-wrap justify-end">'+stagePill(c.stage_group,c.stage_sub)+ownerSlot+'</div></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><div class="lg:col-span-1 space-y-6">'+renderActivityForm(c)+renderArchivePanel(c)+(isAdmin()?renderAdminPanel(userOpts):'')+'</div><div class="lg:col-span-2 space-y-6">'+(state.editingCandidate?renderCandidateEditForm(c):renderCandidateFields(c,editable))+renderInterviewSection()+'<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">Activity timeline <span class="text-stone-400 font-normal">('+state.activities.length+')</span></h2></header><div class="p-4">'+activityItems+'</div></section>'+renderAuditLogSection(c)+'</div></div>'
 }
 
 function renderActivityForm(c){
-  if(!canEdit(c)) return '<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">Interview Status</h2></header><div class="p-4 text-sm text-stone-400 italic">Only the assigned recruiter or an admin can log activities.</div></section>'
+  if(!canEdit(c)) return '<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">Log activity</h2></header><div class="p-4 text-sm text-stone-400 italic">Only the assigned recruiter or an admin can log activities.</div></section>'
+  const needFollowup=!isTerminalSub(c.stage_sub)&&!c.is_archived
   const groupOpts=STAGE_GROUPS.map(g=>'<option value="'+esc(g)+'"'+(g===c.stage_group?' selected':'')+'>'+esc(g)+'</option>').join('')
   const subOpts=(STAGE_SUBS[c.stage_group]||[]).map(s=>'<option value="'+esc(s)+'"'+(s===c.stage_sub?' selected':'')+'>'+esc(s)+'</option>').join('')
-  return '<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">Interview Status</h2></header><form data-action="submit-activity" class="p-4 space-y-3">'
+  const hint=c.is_archived?'<div class="text-xs text-stone-500 italic">Candidate archived — no next action required.</div>':!needFollowup?'<div class="text-xs text-stone-500 italic">Terminal stage — no next action required.</div>':'<div class="text-xs text-stone-500 italic">Next action date required — or move to a terminal stage.</div>'
+  return '<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">Log activity</h2></header><form data-action="submit-activity" class="p-4 space-y-3">'
     + '<div><label class="block text-xs font-medium text-stone-600 mb-1">Type</label><select name="activity_type" required class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring">'+ACTIVITY_TYPES.map(t=>'<option>'+esc(t)+'</option>').join('')+'</select></div>'
     + '<div><label class="block text-xs font-medium text-stone-600 mb-1">Outcome <span class="text-stone-400 font-normal">(short)</span></label><input type="text" name="outcome" placeholder="e.g., Cleared R1, strong on system design" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div>'
     + '<div><label class="block text-xs font-medium text-stone-600 mb-1">Notes</label><textarea name="notes" rows="2" placeholder="Details, feedback, next steps…" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring resize-none"></textarea></div>'
     + '<div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-medium text-stone-600 mb-1">Move stage to</label><select name="new_stage_group" id="act-stage-group" onchange="updateSubStageOptions(this.value)" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Keep current</option>'+groupOpts+'</select></div><div><label class="block text-xs font-medium text-stone-600 mb-1">Sub-stage</label><select name="new_stage_sub" id="act-stage-sub" onchange="toggleActivityFormFields()" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Keep current</option>'+subOpts+'</select></div></div>'
     + '<div id="interview-row" style="display:none" class="space-y-2"><label class="block text-xs font-medium text-stone-600">Interview slot <span class="text-rose-500">*</span></label><div class="grid grid-cols-2 gap-2"><input type="date" name="interview_date" class="text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"><input type="time" name="interview_time" class="text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div><input type="text" name="interviewer" placeholder="Interviewer / panel (optional)" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div>'
     + '<div id="reject-row" style="display:none"><label class="block text-xs font-medium text-stone-600 mb-1">Reason <span class="text-rose-500">*</span></label><select name="reject_reason" id="reject-sel" onchange="toggleRejectOther()" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">— Select reason —</option>'+REJECT_REASONS.map(r=>'<option>'+esc(r)+'</option>').join('')+'</select><input type="text" name="reject_reason_other" id="reject-other" placeholder="Specify…" style="display:none" class="w-full mt-2 text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div>'
-    + '<div id="followup-row"><label class="block text-xs font-medium text-stone-600 mb-1">Next action date <span class="text-stone-400 font-normal">(optional)</span></label><input type="date" name="scheduled_for" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring" min="'+todayYMD()+'"></div>'
-    + '<button type="submit"'+(state.saving?' disabled':'')+' class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-medium py-2 rounded-md transition">'+(state.saving?'Saving…':'Save status')+'</button></form></section>'
+    + '<div id="followup-row"'+(!needFollowup?' style="display:none"':'')+'><label class="block text-xs font-medium text-stone-600 mb-1">Next action date '+(needFollowup?'<span class="text-rose-500">*</span>':'<span class="text-stone-400 font-normal">(optional)</span>')+'</label><input type="date" name="scheduled_for" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring" min="'+todayYMD()+'"></div>'
+    + hint
+    + '<button type="submit"'+(state.saving?' disabled':'')+' class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-medium py-2 rounded-md transition">'+(state.saving?'Saving…':'Log activity')+'</button></form></section>'
 }
-function renderAdminPanel(userOpts){ return '<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">Reassign</h2></header><div class="p-4"><label class="block text-xs font-medium text-stone-600 mb-1">Reassign recruiter</label><select data-action="reassign-recruiter" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Unassigned</option>'+userOpts+'</select></div></section>' }
+function renderAdminPanel(userOpts){ return '<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">Admin</h2></header><div class="p-4"><label class="block text-xs font-medium text-stone-600 mb-1">Reassign recruiter</label><select data-action="reassign-recruiter" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Unassigned</option>'+userOpts+'</select></div></section>' }
 function renderArchivePanel(c){ return '<section class="bg-white border border-stone-200 rounded-lg"><header class="px-4 py-3 border-b border-stone-200 flex items-center justify-between"><h2 class="text-sm font-semibold text-stone-900">Archive</h2>'+(c.is_archived?'<span class="text-[10px] font-semibold uppercase tracking-wider text-stone-500 bg-stone-100 px-2 py-0.5 rounded">Archived</span>':'')+'</header><div class="p-4">'+(c.is_archived?'<div class="text-sm text-stone-700 mb-1">Reason: <span class="font-medium">'+esc(c.archived_reason||'—')+'</span></div><div class="text-xs text-stone-400">By '+esc(userName(c.archived_by)||'unknown')+' on '+esc(fmtDateOnly(c.archived_at)||'?')+'</div><button data-action="clear-archived" class="mt-3 text-xs text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-400 px-2.5 py-1 rounded-md">Restore candidate</button>':'<div class="space-y-2"><input type="text" id="archive-reason" placeholder="Reason (e.g., role closed, no response)" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"><button data-action="set-archived" class="w-full text-sm text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-400 hover:bg-stone-50 py-1.5 rounded-md font-medium transition">Archive candidate</button></div>')+'</div></section>' }
-function renderMeetPanel(c){
-  if(!canEdit(c)) return ''
-  const header='<header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">Schedule Google Meet</h2></header>'
-  if(!c.email) return '<section class="bg-white border border-stone-200 rounded-lg">'+header+'<div class="p-4 text-sm text-stone-400 italic">Add the candidate\'s email to schedule a meeting.</div></section>'
-  const defaultSubject='Interview — '+(c.candidate_name||'Candidate')
-  const canAttachNatively=!!c.resume_url && !/^https?:/.test(c.resume_url)
-  let cvBlock
-  if(canAttachNatively) cvBlock='<label class="flex items-start gap-2 text-xs text-stone-600"><input type="checkbox" name="attach_cv" checked class="mt-0.5 rounded border-stone-300 text-indigo-600"> <span>Attach the CV as a file on the invite (uploads a copy to your Google Drive). If this fails, a link is included instead.</span></label>'
-  else if(c.resume_url) cvBlock='<div class="text-xs text-stone-500 italic">CV is an external link — it\'ll be included in the invite description (native file attachments only work for uploaded CVs).</div>'
-  else cvBlock='<div class="text-xs text-stone-400 italic">No CV on file — invite will be sent without one.</div>'
-  return '<section class="bg-white border border-stone-200 rounded-lg">'+header+'<form data-action="schedule-meet" class="p-4 space-y-3">'
-    + '<div><label class="block text-xs font-medium text-stone-600 mb-1">Subject</label><input type="text" name="meet_subject" value="'+esc(defaultSubject)+'" required class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div>'
-    + '<div class="grid grid-cols-2 gap-2"><div><label class="block text-xs font-medium text-stone-600 mb-1">Date</label><input type="date" name="meet_date" required min="'+todayYMD()+'" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div><div><label class="block text-xs font-medium text-stone-600 mb-1">Time</label><input type="time" name="meet_time" required class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div></div>'
-    + '<div><label class="block text-xs font-medium text-stone-600 mb-1">Duration</label><select name="meet_duration" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60" selected>60 minutes</option><option value="90">90 minutes</option></select></div>'
-    + cvBlock
-    + '<button type="submit"'+(state.savingMeet?' disabled':'')+' class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-medium py-2 rounded-md transition">'+(state.savingMeet?'Creating…':'Create Google Meet invite')+'</button>'
-    + '</form></section>'
-}
 
 function renderInterviewSection(){
   const iv=state.interviews||[]
@@ -689,88 +574,14 @@ async function openResume(pathOrUrl){
   if(error){ flash('err','Could not open CV: '+error.message); return }
   window.open(data.signedUrl,'_blank','noopener')
 }
-async function getResumeLinkForInvite(c){
-  if(!c.resume_url) return null
-  if(/^https?:/.test(c.resume_url)) return c.resume_url
-  try{ const {data,error}=await supabase.storage.from('resumes').createSignedUrl(c.resume_url, 60*60*24*7); if(error) return null; return data.signedUrl }
-  catch(e){ return null }
-}
-async function uploadResumeToDrive(c){
-  const {data:blob,error:dlErr}=await supabase.storage.from('resumes').download(c.resume_url)
-  if(dlErr||!blob) throw new Error('Could not read the CV file from storage.')
-  const ext=(c.resume_url.split('.').pop()||'pdf').toLowerCase()
-  const fileName=(c.candidate_name||'candidate').replace(/[^a-z0-9 ]/gi,'').trim()+' - CV.'+ext
-  const metadata={name:fileName}
-  const fd=new FormData()
-  fd.append('metadata',new Blob([JSON.stringify(metadata)],{type:'application/json'}))
-  fd.append('file',blob)
-  const upRes=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink,mimeType',{ method:'POST', headers:{'Authorization':'Bearer '+state.providerToken}, body:fd })
-  const upJson=await upRes.json()
-  if(!upRes.ok) throw new Error(upJson.error?.message||'Drive upload failed.')
-  const shareTargets=[c.email,state.session.user.email].filter(Boolean)
-  await Promise.all(shareTargets.map(email=>fetch('https://www.googleapis.com/drive/v3/files/'+upJson.id+'/permissions',{ method:'POST', headers:{'Authorization':'Bearer '+state.providerToken,'Content-Type':'application/json'}, body:JSON.stringify({role:'reader',type:'user',emailAddress:email}) }).catch(()=>null)))
-  return { fileId:upJson.id, title:fileName, mimeType:upJson.mimeType||blob.type||'application/octet-stream', fileUrl:upJson.webViewLink }
-}
-async function scheduleMeet(form){
-  const c=state.currentCandidate
-  if(!c||state.savingMeet) return
-  if(!c.email){ flash('err','Add the candidate\'s email before scheduling a meeting.'); return }
-  if(!state.providerToken){ flash('err','Google Calendar isn\'t connected — sign out and sign back in, and approve both Calendar and Drive access when prompted.'); return }
-  const subject=form.meet_subject?.value?.trim()||('Interview — '+(c.candidate_name||'Candidate'))
-  const date=form.meet_date.value, time=form.meet_time.value, dur=Number(form.meet_duration.value)||60
-  if(!date||!time){ flash('err','Pick a date and time.'); return }
-  const wantsAttach=!!form.attach_cv?.checked
-  state.savingMeet=true; render()
-  const start=new Date(date+'T'+time+':00')
-  const end=new Date(start.getTime()+dur*60000)
-  const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Kolkata'
-
-  let driveAttachment=null, attachWarning=''
-  if(wantsAttach && c.resume_url && !/^https?:/.test(c.resume_url)){
-    try{ driveAttachment=await uploadResumeToDrive(c) }
-    catch(e){ attachWarning='Could not attach the CV as a file ('+e.message+') — included a link instead.' }
-  }
-
-  const resumeLink=driveAttachment?driveAttachment.fileUrl:await getResumeLinkForInvite(c)
-  const descLines=['Candidate: '+(c.candidate_name||'—')]
-  if(c.role) descLines.push('Role: '+c.role+(c.department?' · '+c.department:''))
-  descLines.push(resumeLink?('Resume / CV: '+resumeLink):'Resume / CV: not on file')
-  const attendees=[{email:c.email}]
-  if(state.session.user.email) attendees.push({email:state.session.user.email})
-  const payload={
-    summary:subject,
-    description:descLines.join('\n'),
-    start:{dateTime:start.toISOString(),timeZone:tz},
-    end:{dateTime:end.toISOString(),timeZone:tz},
-    attendees,
-    conferenceData:{createRequest:{requestId:'meet-'+c.id+'-'+Date.now(),conferenceSolutionKey:{type:'hangoutsMeet'}}},
-  }
-  if(driveAttachment) payload.attachments=[{fileId:driveAttachment.fileId,title:driveAttachment.title,mimeType:driveAttachment.mimeType,fileUrl:driveAttachment.fileUrl}]
-  try{
-    const url='https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1&sendUpdates=all'+(driveAttachment?'&supportsAttachments=true':'')
-    const res=await fetch(url,{
-      method:'POST', headers:{'Authorization':'Bearer '+state.providerToken,'Content-Type':'application/json'}, body:JSON.stringify(payload)
-    })
-    const json=await res.json()
-    state.savingMeet=false
-    if(!res.ok){
-      flash('err','Google rejected the request: '+(json.error?.message||res.statusText)+' (status '+res.status+')')
-      render(); return
-    }
-    flash('ok','Meet invite sent to '+c.email+(driveAttachment?' · CV attached':'')+(attachWarning?' · '+attachWarning:''))
-    if(json.htmlLink) window.open(json.htmlLink,'_blank','noopener')
-    render()
-  }catch(err){ state.savingMeet=false; flash('err','Network error creating the invite.'); render() }
-}
-function candidateFormBody(d,requireAll){
+function candidateFormBody(d){
   const roleList='<datalist id="dl-roles">'+ROLES.map(r=>'<option value="'+esc(r)+'">').join('')+'</datalist>'
   const subDeptList='<datalist id="dl-subdept">'+SUB_DEPARTMENTS.map(s=>'<option value="'+esc(s)+'">').join('')+'</datalist>'
-  const req=!!requireAll
   return roleList+subDeptList
-    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Candidate</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-4">'+inpField('Full name','candidate_name',d.candidate_name,{required:true,colSpan:'md:col-span-1'})+inpField('Contact number','contact_no',d.contact_no,{type:'tel',required:req})+inpField('Email','email',d.email,{type:'email',required:req})+'</div></section>'
-    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Role applied for</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+selField('Department','department',DEPARTMENTS,d.department,{required:req})+inpField('Sub-department','sub_department',d.sub_department,{list:'dl-subdept',required:req})+inpField('Role','role',d.role,{list:'dl-roles',colSpan:'md:col-span-2',required:req})+selField('Work mode','work_mode',WORK_MODES,d.work_mode,{required:req})+'</div></section>'
-    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Background</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+inpField('Current / last company','current_company',d.current_company,{required:req})+inpField('Total experience (yrs)','total_exp',d.total_exp,{type:'number',required:req})+inpField('Current CTC','current_ctc',d.current_ctc,{type:'number',required:req})+inpField('Expected CTC','expected_ctc',d.expected_ctc,{type:'number',required:req})+selField('Notice period','notice_period',NOTICE_PERIODS,d.notice_period,{required:req})+inpField('Current location','current_location',d.current_location,{required:req})+selField('Reason for change','reason_for_change',REASON_FOR_CHANGE,d.reason_for_change,{required:req,colSpan:'md:col-span-2'})+resumeField(d)+'</div></section>'
-    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Sourcing</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+selField('Source','source_detail',SOURCE_DETAILS,d.source_detail,{required:req})+'<div class="text-xs text-stone-400 self-end pb-2">Source type is set automatically from the source.</div></div></section>'
+    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Candidate</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-4">'+inpField('Full name','candidate_name',d.candidate_name,{required:true,colSpan:'md:col-span-1'})+inpField('Contact number','contact_no',d.contact_no,{type:'tel'})+inpField('Email','email',d.email,{type:'email'})+'</div></section>'
+    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Role applied for</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+selField('Department','department',DEPARTMENTS,d.department)+inpField('Sub-department','sub_department',d.sub_department,{list:'dl-subdept'})+inpField('Role','role',d.role,{list:'dl-roles',colSpan:'md:col-span-2'})+selField('Work mode','work_mode',WORK_MODES,d.work_mode)+'</div></section>'
+    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Background</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+inpField('Current / last company','current_company',d.current_company)+inpField('Total experience (yrs)','total_exp',d.total_exp,{type:'number'})+inpField('Current CTC','current_ctc',d.current_ctc,{type:'number'})+inpField('Expected CTC','expected_ctc',d.expected_ctc,{type:'number'})+selField('Notice period','notice_period',NOTICE_PERIODS,d.notice_period)+inpField('Current location','current_location',d.current_location)+inpField('Reason for change','reason_for_change',d.reason_for_change,{type:'textarea',colSpan:'md:col-span-2'})+resumeField(d)+'</div></section>'
+    + '<section class="bg-white border border-stone-200 rounded-lg p-5"><h2 class="text-sm font-semibold text-stone-900 mb-4">Sourcing</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4">'+selField('Source','source_detail',SOURCE_DETAILS,d.source_detail)+'<div class="text-xs text-stone-400 self-end pb-2">Source type is set automatically from the source.</div></div></section>'
 }
 
 function renderCandidateNew(){
@@ -779,7 +590,7 @@ function renderCandidateNew(){
   const draftBanner=hasDraft?'<div class="mb-4 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 flex items-center justify-between text-sm"><span class="text-amber-800">Draft restored.</span><button type="button" data-action="clear-draft" class="text-xs text-amber-600 hover:text-amber-900 font-medium">Clear</button></div>':''
   const dw=state.dupWarning
   const dupBanner=dw?'<div class="mb-4 bg-rose-50 border border-rose-200 rounded-lg px-4 py-3 flex items-center justify-between gap-3"><div class="text-sm text-rose-800"><span class="font-semibold">Candidate already exists</span> — the same '+esc(dw.why)+' is already in the database (<span class="font-medium">'+esc(dw.name)+'</span>). Duplicate entries aren\'t allowed.</div><a href="#/candidates/'+esc(dw.id)+'" class="shrink-0 text-xs font-medium bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-md">View existing →</a></div>':''
-  return '<div class="mb-5"><h1 class="text-xl font-semibold tracking-tight text-stone-900">Add a candidate</h1><p class="text-sm text-stone-500 mt-0.5">You become the assigned recruiter once saved. Stage starts at New · Sourced.</p></div>'+dupBanner+draftBanner+'<form data-action="submit-new-candidate" class="space-y-6 max-w-4xl">'+candidateFormBody(d,true)+'<div class="flex items-center gap-3 sticky bottom-4 bg-white border border-stone-200 rounded-lg p-4 shadow-sm"><button type="submit"'+(state.saving?' disabled':'')+' class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-medium px-4 py-2 rounded-md">'+(state.saving?'Saving…':'Save candidate')+'</button><a href="#/candidates" class="text-sm text-stone-600 hover:text-stone-900">Cancel</a></div></form>'
+  return '<div class="mb-5"><h1 class="text-xl font-semibold tracking-tight text-stone-900">Add a candidate</h1><p class="text-sm text-stone-500 mt-0.5">You become the assigned recruiter once saved. Stage starts at New · Sourced.</p></div>'+dupBanner+draftBanner+'<form data-action="submit-new-candidate" class="space-y-6 max-w-4xl">'+candidateFormBody(d)+'<div class="flex items-center gap-3 sticky bottom-4 bg-white border border-stone-200 rounded-lg p-4 shadow-sm"><button type="submit"'+(state.saving?' disabled':'')+' class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-medium px-4 py-2 rounded-md">'+(state.saving?'Saving…':'Save candidate')+'</button><a href="#/candidates" class="text-sm text-stone-600 hover:text-stone-900">Cancel</a></div></form>'
 }
 function renderCandidateEditForm(c){
   return '<form data-action="save-candidate-edits" class="space-y-6">'+candidateFormBody(c)+'<div class="flex items-center gap-3"><button type="submit"'+(state.saving?' disabled':'')+' class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-medium px-4 py-2 rounded-md">'+(state.saving?'Saving…':'Save changes')+'</button><button type="button" data-action="cancel-edit" class="text-sm text-stone-600 hover:text-stone-900">Cancel</button></div></form>'
@@ -837,37 +648,10 @@ function renderAuditLogSection(c){
 }
 
 // ── REPORTS ──────────────────────────────────────────────────────
-function renderReportsFilterBar(){
-  const f=state.reportsFilters
-  const recruiterOpts=state.users.map(u=>'<option value="'+esc(u.user_id)+'"'+(f.recruiterId===u.user_id?' selected':'')+'>'+esc(u.full_name||u.email)+'</option>').join('')
-  const subOpts=(STAGE_SUBS[f.stageGroup]||[]).map(s=>'<option value="'+esc(s)+'"'+(f.stageSub===s?' selected':'')+'>'+esc(s)+'</option>').join('')
-  const stageSubSelect=f.stageGroup?'<select data-action="rf-stage-sub-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">All sub-stages</option>'+subOpts+'<option value="__archived__"'+(f.stageSub==='__archived__'?' selected':'')+'>⊘ Archived</option></select>':''
-  return '<div class="flex flex-wrap items-center gap-2 mb-5">'
-    + '<input type="text" data-action="rf-search-input" value="'+esc(f.search)+'" placeholder="Search name, email, phone, company…" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring w-56">'
-    + '<select data-action="rf-stage-group-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">All stages</option>'+STAGE_GROUPS.map(g=>'<option value="'+esc(g)+'"'+(f.stageGroup===g?' selected':'')+'>'+esc(g)+'</option>').join('')+'</select>'+stageSubSelect
-    + multiSelectDropdown('rf_departments','All departments',DEPARTMENTS.map(d=>({value:d,label:d})),f.departments,{searchable:true})
-    + multiSelectDropdown('rf_subDepartments','All sub-departments',SUB_DEPARTMENTS.map(s=>({value:s,label:s})),f.subDepartments,{searchable:true})
-    + multiSelectDropdown('rf_roles','All roles',ROLES.map(r=>({value:r,label:r})),f.roles,{searchable:true})
-    + multiSelectDropdown('rf_sources','All sources',SOURCE_DETAILS.map(s=>({value:s,label:s})),f.sources,{searchable:true})
-    + '<select data-action="rf-workmode-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Any work mode</option>'+WORK_MODES.map(w=>'<option value="'+esc(w)+'"'+(f.workMode===w?' selected':'')+'>'+esc(w)+'</option>').join('')+'</select>'
-    + '<select data-action="rf-notice-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Any notice</option>'+NOTICE_PERIODS.map(nn=>'<option value="'+esc(nn)+'"'+(f.noticePeriod===nn?' selected':'')+'>'+esc(nn)+'</option>').join('')+'</select>'
-    + '<select data-action="rf-recruiter-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"'+(f.mineOnly?' disabled':'')+'><option value="">All recruiters</option><option value="unassigned"'+(f.recruiterId==='unassigned'?' selected':'')+'>Unassigned</option>'+recruiterOpts+'</select>'
-    + '<select data-action="rf-archived-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">All (incl. archived)</option><option value="no"'+(f.archived==='no'?' selected':'')+'>Active only</option><option value="yes"'+(f.archived==='yes'?' selected':'')+'>Archived only</option></select>'
-    + '<button data-action="rf-toggle-mine" class="text-sm px-3 py-1.5 border rounded-md transition '+(f.mineOnly?'border-indigo-300 bg-indigo-50 text-indigo-700':'border-stone-200 text-stone-700')+'">Mine only</button>'
-    + '<button data-action="rf-clear" class="text-sm text-stone-500 hover:text-stone-800 px-2">Clear filters</button>'
-    + '</div>'
-}
 function renderReports(){
   const d=state.reportsData
-  const admin=isAdmin()
-  const hdr='<div class="mb-5 flex items-end justify-between flex-wrap gap-3"><div><h1 class="text-xl font-semibold tracking-tight text-stone-900">Reports</h1><p class="text-sm text-stone-500 mt-0.5">'+(admin?'Sourcing, pipeline, and recruiter analytics. Every view below respects the filters and date range.':'Recruiter sourced counts and sub-department breakdown.')+'</p></div><div class="flex items-end gap-2"><div><label class="block text-[10px] font-medium text-stone-500 uppercase tracking-wider mb-1">From</label><input type="date" value="'+esc(state.reportsFrom)+'" data-action="reports-from-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"></div><div><label class="block text-[10px] font-medium text-stone-500 uppercase tracking-wider mb-1">To</label><input type="date" value="'+esc(state.reportsTo)+'" data-action="reports-to-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"></div></div></div>'+renderReportsFilterBar()
+  const hdr='<div class="mb-5 flex items-end justify-between flex-wrap gap-3"><div><h1 class="text-xl font-semibold tracking-tight text-stone-900">Reports</h1><p class="text-sm text-stone-500 mt-0.5">Sourcing, pipeline, and recruiter analytics.</p></div><div class="flex items-end gap-2"><div><label class="block text-[10px] font-medium text-stone-500 uppercase tracking-wider mb-1">From</label><input type="date" value="'+esc(state.reportsFrom)+'" data-action="reports-from-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"></div><div><label class="block text-[10px] font-medium text-stone-500 uppercase tracking-wider mb-1">To</label><input type="date" value="'+esc(state.reportsTo)+'" data-action="reports-to-change" class="text-sm px-2 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"></div></div></div>'
   if(!d) return hdr+'<div class="text-stone-500 text-sm">Loading reports…</div>'
-  const card=(title,subtitle,body)=>'<section class="bg-white border border-stone-200 rounded-lg overflow-hidden mb-6"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">'+esc(title)+'</h2>'+(subtitle?'<p class="text-xs text-stone-500 mt-0.5">'+esc(subtitle)+'</p>':'')+'</header><div class="p-4">'+body+'</div></section>'
-
-  const viewRecruiterChart=card((admin?'2. ':'1. ')+'Recruiter sourced count','How many candidates each recruiter sourced within the selected date range and filters · click a bar to view that recruiter\'s candidates','<div style="position:relative; height:320px;"><canvas id="chart-recruiter-sourced"></canvas></div>')
-
-  if(!admin) return hdr+viewRecruiterChart+renderGroupedSection(2)
-
   const t=d.tiles||{}
   const tile=(label,value,sub,accent)=>'<div class="bg-white border border-stone-200 rounded-lg p-4"><div class="text-[10px] font-semibold uppercase tracking-wider text-stone-500">'+esc(label)+'</div><div class="text-2xl font-semibold mt-1 '+(accent||'text-stone-900')+'">'+(typeof value==='number'?value.toLocaleString():esc(value))+'</div>'+(sub?'<div class="text-[11px] text-stone-500 mt-1">'+esc(sub)+'</div>':'')+'</div>'
   const tiles='<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">'
@@ -878,10 +662,31 @@ function renderReports(){
     + tile('Interviews',t.interviews_scheduled||0,'Scheduled in range')
     + tile('Avg days to select',t.avg_days_to_select||0,'Sourced → offer')
     + '</div>'
+  const card=(title,subtitle,body)=>'<section class="bg-white border border-stone-200 rounded-lg overflow-hidden mb-6"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">'+esc(title)+'</h2>'+(subtitle?'<p class="text-xs text-stone-500 mt-0.5">'+esc(subtitle)+'</p>':'')+'</header><div class="p-4">'+body+'</div></section>'
 
-  const view1=card('1. Hiring funnel','Where candidates sit across the pipeline','<div style="position:relative; height:300px;"><canvas id="chart-funnel"></canvas></div>')
+  const view1=card('1. Daily candidates sourced','New reach-outs added per day across the selected range','<div style="position:relative; height:260px;"><canvas id="chart-daily"></canvas></div>')
+  const view2=card('2. Hiring funnel','Where candidates sit across the pipeline','<div style="position:relative; height:300px;"><canvas id="chart-funnel"></canvas></div>')
 
-  return hdr+tiles+view1+viewRecruiterChart+renderPivot(3)+renderGroupedSection(4)
+  const rs=(d.recruiter_stats||[]).filter(u=>u&&(u.sourced||u.owned||u.offers||u.interviews)).sort((a,b)=>(b.sourced||0)-(a.sourced||0))
+  const rlRows=rs.length===0?'<tr><td colspan="6" class="text-center text-stone-400 py-8 text-sm">No recruiter activity yet.</td></tr>':rs.map(u=>'<tr class="border-b border-stone-100"><td class="py-3 px-4"><div class="flex items-center gap-2.5">'+avatar(u.user_id,'sm')+'<div><div class="text-sm font-medium text-stone-900">'+esc(u.full_name||'—')+'</div><div class="text-xs text-stone-500">'+esc(u.email)+'</div></div></div></td><td class="py-3 px-4 text-sm font-medium text-stone-900">'+(u.sourced||0)+'</td><td class="py-3 px-4 text-sm text-stone-700">'+(u.owned||0)+'</td><td class="py-3 px-4 text-sm text-stone-700">'+(u.interviews||0)+'</td><td class="py-3 px-4 text-sm font-medium text-emerald-700">'+(u.offers||0)+'</td><td class="py-3 px-4 text-sm '+((u.overdue||0)>0?'text-rose-600 font-medium':'text-stone-400')+'">'+(u.overdue||0)+'</td></tr>').join('')
+  const view3=card('3. Recruiter leaderboard','Sourced counts within the range; the rest are live totals','<div class="overflow-x-auto"><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="py-2.5 px-4">Recruiter</th><th class="py-2.5 px-4">Sourced</th><th class="py-2.5 px-4">Owned</th><th class="py-2.5 px-4">Interviews</th><th class="py-2.5 px-4">Offers</th><th class="py-2.5 px-4">Overdue</th></tr></thead><tbody>'+rlRows+'</tbody></table></div>')
+
+  const se=(d.source_effectiveness||[]).slice(0,20)
+  const seRows=se.length===0?'<tr><td colspan="4" class="text-center text-stone-400 py-8 text-sm">No data.</td></tr>':se.map(r=>{ const pct=r.pct||0; const w=Math.min(100,pct*3); return '<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(r.source)+'</td><td class="px-4 py-2 text-sm text-stone-700">'+r.total+'</td><td class="px-4 py-2 text-sm text-emerald-700 font-medium">'+r.offers+'</td><td class="px-4 py-2"><div class="flex items-center gap-2"><div class="w-24 h-2 bg-stone-100 rounded-full overflow-hidden"><div class="h-full bg-indigo-500" style="width:'+w+'%"></div></div><span class="text-sm font-medium text-stone-900">'+pct+'%</span></div></td></tr>' }).join('')
+  const view4=card('4. Source effectiveness','Which channels convert sourced candidates into offers','<div class="overflow-x-auto"><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Source</th><th class="px-4 py-2">Sourced</th><th class="px-4 py-2">Offers</th><th class="px-4 py-2">Conversion</th></tr></thead><tbody>'+seRows+'</tbody></table></div>')
+
+  const dep=(d.by_department||[]), rol=(d.by_role||[])
+  const depRows=dep.length===0?'<tr><td colspan="2" class="text-center text-stone-400 py-6 text-sm">No data.</td></tr>':dep.map(r=>'<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(r.department)+'</td><td class="px-4 py-2 text-sm font-medium text-stone-900">'+r.n+'</td></tr>').join('')
+  const rolRows=rol.length===0?'<tr><td colspan="2" class="text-center text-stone-400 py-6 text-sm">No data.</td></tr>':rol.map(r=>'<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(r.role)+'</td><td class="px-4 py-2 text-sm font-medium text-stone-900">'+r.n+'</td></tr>').join('')
+  const view5=card('5. Open pipeline by demand','Where hiring is concentrated','<div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div><div class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">By department</div><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Department</th><th class="px-4 py-2">Active</th></tr></thead><tbody>'+depRows+'</tbody></table></div><div><div class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Top roles</div><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Role</th><th class="px-4 py-2">Active</th></tr></thead><tbody>'+rolRows+'</tbody></table></div></div>')
+
+  const rr=(d.reject_reasons||[])
+  const byReason={}
+  rr.forEach(x=>{ const k=x.reason||'Unspecified'; byReason[k]=(byReason[k]||0)+(x.n||0) })
+  const reasonRows=Object.keys(byReason).length===0?'<tr><td colspan="2" class="text-center text-stone-400 py-6 text-sm">No rejections logged.</td></tr>':Object.entries(byReason).sort((a,b)=>b[1]-a[1]).map(([k,v])=>'<tr class="border-b border-stone-100"><td class="px-4 py-2 text-sm text-stone-800">'+esc(k)+'</td><td class="px-4 py-2 text-sm font-medium text-stone-900">'+v+'</td></tr>').join('')
+  const view6=card('6. Why candidates fall out','Reject / drop reasons across all rounds','<table class="w-full max-w-lg"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="px-4 py-2">Reason</th><th class="px-4 py-2">Count</th></tr></thead><tbody>'+reasonRows+'</tbody></table>')
+
+  return hdr+tiles+view1+view2+view3+view4+view5+view6+renderPivot()
 }
 
 function destroyCharts(){ for(const k in state.chartInstances){ try{ state.chartInstances[k].destroy() }catch(e){} } state.chartInstances={} }
@@ -890,13 +695,16 @@ if(window.ChartDataLabels&&window.Chart){ try{ Chart.register(ChartDataLabels) }
 function initReportsCharts(){
   if(!state.reportsData) return
   destroyCharts()
-  // recruiter sourced count
-  const rs=(state.reportsData.recruiter_stats||[]).filter(u=>u&&u.sourced).sort((a,b)=>(b.sourced||0)-(a.sourced||0))
-  const rLabels=rs.map(u=>u.full_name||u.email||'—')
-  const rData=rs.map(u=>u.sourced||0)
-  const rEl=document.getElementById('chart-recruiter-sourced')
-  if(rEl){ state.chartInstances.recruiterSourced=new Chart(rEl,{ type:'bar', data:{ labels:rLabels, datasets:[{ data:rData, backgroundColor:'#6366F1', borderRadius:4, borderSkipped:false, maxBarThickness:48 }] }, options:{ responsive:true, maintainAspectRatio:false, onClick:(evt,elements)=>{ if(!elements.length) return; const uid=rs[elements[0].index]?.user_id; if(!uid) return; state.filters.recruiterId=uid; state.filters.mineOnly=false; state.filters.createdFrom=state.reportsFrom||''; state.filters.createdTo=state.reportsTo||''; state.candidatesPage=1; window.location.hash='#/candidates' }, onHover:(evt,elements)=>{ evt.native.target.style.cursor=elements.length?'pointer':'default' }, plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#1C1917'}, datalabels:{ anchor:'end', align:'end', color:'#44403C', font:{size:11,weight:'600'}, formatter:(v)=>v>0?v:'' } }, scales:{ x:{ grid:{display:false}, ticks:{ color:'#78716C', font:{size:11}, maxRotation:30, minRotation:0, autoSkip:false } }, y:{ beginAtZero:true, grid:{color:'#F5F5F4'}, ticks:{ color:'#78716C', font:{size:11}, precision:0 } } } } }) }
-  // funnel
+  // 1. daily sourced
+  const raw=state.reportsData.daily_sourced||[]
+  const byDay={}; raw.forEach(r=>{ byDay[r.day]=r.n })
+  const from=new Date(state.reportsFrom), to=new Date(state.reportsTo)
+  const days=[], counts=[]
+  const span=Math.min(120,Math.max(1,Math.round((to-from)/86400000)+1))
+  for(let i=span-1;i>=0;i--){ const dt=new Date(to); dt.setDate(dt.getDate()-i); const ymd=dt.toISOString().slice(0,10); days.push(dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'})); counts.push(byDay[ymd]||0) }
+  const dEl=document.getElementById('chart-daily')
+  if(dEl){ const ctx=dEl.getContext('2d'); const grad=ctx.createLinearGradient(0,0,0,260); grad.addColorStop(0,'rgba(99,102,241,0.18)'); grad.addColorStop(1,'rgba(99,102,241,0)'); state.chartInstances.daily=new Chart(dEl,{ type:'line', data:{ labels:days, datasets:[{ data:counts, borderColor:'#6366F1', backgroundColor:grad, fill:true, tension:0.3, pointRadius:0, pointHoverRadius:4, borderWidth:2 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#1C1917'}, datalabels:{display:false} }, scales:{ x:{ grid:{display:false}, ticks:{ color:'#78716C', font:{size:10}, maxRotation:0, autoSkip:true, maxTicksLimit:10 } }, y:{ beginAtZero:true, grid:{color:'#F5F5F4'}, ticks:{ color:'#78716C', font:{size:11}, precision:0 } } } } }) }
+  // 2. funnel
   const funnel=state.reportsData.funnel||[]
   const fmap={}; funnel.forEach(r=>{ fmap[r.stage]=r.n })
   const labels=STAGE_GROUPS.filter(g=>fmap[g])
@@ -907,6 +715,28 @@ function initReportsCharts(){
 }
 
 // ── PIVOT ────────────────────────────────────────────────────────
+async function loadPivotData(){
+  const p=state.pivot
+  p.loading=true; render(); if(state.view==='reports') initReportsCharts()
+  const all=[]; const pageSize=1000; let from=0
+  while(true){
+    let q=supabase.from('candidates').select('recruiter_user_id,department,sub_department,role,source_detail,source_type,stage_group,stage_sub,work_mode,notice_period,final_status,is_archived,created_at').range(from,from+pageSize-1)
+    if(state.reportsFrom) q=q.gte('created_at',state.reportsFrom)
+    if(state.reportsTo) q=q.lte('created_at',state.reportsTo+'T23:59:59')
+    if(p.dept.length) q=q.in('department',p.dept)
+    if(p.role.length) q=q.in('role',p.role)
+    if(p.source.length) q=q.in('source_detail',p.source)
+    if(p.recruiterId==='unassigned') q=q.is('recruiter_user_id',null)
+    else if(p.recruiterId) q=q.eq('recruiter_user_id',p.recruiterId)
+    if(p.stageGroup) q=q.eq('stage_group',p.stageGroup)
+    if(p.workMode) q=q.eq('work_mode',p.workMode)
+    const {data,error}=await q
+    if(error){ p.loading=false; flash('err',error.message); render(); return }
+    all.push(...(data||[])); if(!data||data.length<pageSize) break; from+=pageSize
+  }
+  p.raw=all; computePivot(all)
+  p.loading=false; render(); if(state.view==='reports') initReportsCharts()
+}
 function pivotVal(dimKey,c){
   if(dimKey==='recruiter') return userName(c.recruiter_user_id)||'Unassigned'
   if(dimKey==='final_status') return c.final_status||'In process'
@@ -943,17 +773,25 @@ function exportPivot(){
   lines.push(['Total',...p.colKeys.map(ck=>p.colTotals[ck]||0),p.grand].map(q).join(','))
   const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='pivot-'+todayYMD()+'.csv'; a.click(); URL.revokeObjectURL(url)
 }
-function renderPivot(num){
-  num=num||7
+function renderPivot(){
   const p=state.pivot
   const dimSel=(axis,val)=>'<select data-action="pivot-dim-change" data-axis="'+axis+'" class="text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring">'+PIVOT_DIMS.map(d=>'<option value="'+d.key+'"'+(val===d.key?' selected':'')+'>'+esc(d.label)+'</option>').join('')+'</select>'
+  const recruiterOpts=state.users.map(u=>'<option value="'+esc(u.user_id)+'"'+(p.recruiterId===u.user_id?' selected':'')+'>'+esc(u.full_name||u.email)+'</option>').join('')
   const controls='<div class="flex flex-wrap items-center gap-2 mb-4">'
     + '<span class="text-[10px] font-semibold text-stone-500 uppercase tracking-wider">Rows</span>'+dimSel('rows',p.rows)
     + '<span class="text-stone-400">×</span><span class="text-[10px] font-semibold text-stone-500 uppercase tracking-wider">Cols</span>'+dimSel('cols',p.cols)
+    + '<span class="w-px h-6 bg-stone-200 mx-1"></span>'
+    + multiSelectDropdown('pivot_dept','All departments',DEPARTMENTS.map(d=>({value:d,label:d})),p.dept,{searchable:true})
+    + multiSelectDropdown('pivot_role','All roles',ROLES.map(r=>({value:r,label:r})),p.role,{searchable:true})
+    + multiSelectDropdown('pivot_source','All sources',SOURCE_DETAILS.map(s=>({value:s,label:s})),p.source,{searchable:true})
+    + '<select data-action="pivot-recruiter-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">All recruiters</option><option value="unassigned"'+(p.recruiterId==='unassigned'?' selected':'')+'>Unassigned</option>'+recruiterOpts+'</select>'
+    + '<select data-action="pivot-stage-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">All stages</option>'+STAGE_GROUPS.map(g=>'<option value="'+esc(g)+'"'+(p.stageGroup===g?' selected':'')+'>'+esc(g)+'</option>').join('')+'</select>'
+    + '<select data-action="pivot-workmode-change" class="text-sm px-3 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Any work mode</option>'+WORK_MODES.map(w=>'<option value="'+esc(w)+'"'+(p.workMode===w?' selected':'')+'>'+esc(w)+'</option>').join('')+'</select>'
+    + '<button data-action="pivot-clear" class="text-sm text-stone-500 hover:text-stone-800 px-2">Clear</button>'
     + '<button data-action="pivot-export" class="text-sm border border-stone-200 hover:border-stone-400 text-stone-700 px-3 py-1.5 rounded-md ml-auto">Export CSV</button>'
     + '</div>'
   let table
-  if(state.reportsLoading) table='<div class="text-sm text-stone-500 py-10 text-center">Building pivot…</div>'
+  if(p.loading) table='<div class="text-sm text-stone-500 py-10 text-center">Building pivot…</div>'
   else if(!p.matrix||!p.grand) table='<div class="text-sm text-stone-400 py-10 text-center">No candidates match these filters.</div>'
   else{
     const rowLabel=(PIVOT_DIMS.find(d=>d.key===p.rows)||{}).label||''
@@ -965,75 +803,19 @@ function renderPivot(num){
     const foot='<tr class="border-t-2 border-stone-200 bg-stone-50"><td class="py-2 px-3 text-left text-sm font-semibold text-stone-900 sticky left-0 bg-stone-50 z-10">Total</td>'+p.colKeys.map(ck=>'<td class="py-2 px-3 text-right text-sm font-semibold text-stone-900">'+(p.colTotals[ck]||0)+'</td>').join('')+'<td class="py-2 px-3 text-right text-sm font-bold text-indigo-700">'+p.grand+'</td></tr>'
     table='<div class="overflow-x-auto border border-stone-200 rounded-lg"><table class="w-full">'+head+'<tbody>'+body+foot+'</tbody></table></div>'
   }
-  return '<section class="bg-white border border-stone-200 rounded-lg overflow-hidden mb-6"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">'+num+'. Pivot table</h2><p class="text-xs text-stone-500 mt-0.5">Cross-tabulate any two dimensions. Respects the filters and date range above.</p></header><div class="p-4">'+controls+table+'</div></section>'
+  return '<section class="bg-white border border-stone-200 rounded-lg overflow-hidden mb-6"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">7. Pivot table</h2><p class="text-xs text-stone-500 mt-0.5">Cross-tabulate any two dimensions. Respects the date range above.</p></header><div class="p-4">'+controls+table+'</div></section>'
 }
-
-function computeGroupedBreakdown(rows){
-  const cols=GROUPED_COLS
-  const groups={}
-  const grand={}; cols.forEach(c=>grand[c]=0); grand.total=0
-  for(const c of rows){
-    const dep=c.department||'—'
-    const sd=c.sub_department||'—'
-    const role=c.role||'—'
-    const wm=cols.includes(c.work_mode)?c.work_mode:null
-    if(!groups[dep]){ const t={}; cols.forEach(x=>t[x]=0); t.total=0; groups[dep]={subDepts:{}, totals:t} }
-    const depG=groups[dep]
-    if(!depG.subDepts[sd]){ const t={}; cols.forEach(x=>t[x]=0); t.total=0; depG.subDepts[sd]={roles:{}, totals:t} }
-    const sdG=depG.subDepts[sd]
-    if(!sdG.roles[role]){ const t={}; cols.forEach(x=>t[x]=0); t.total=0; sdG.roles[role]=t }
-    if(wm){ sdG.roles[role][wm]++; sdG.totals[wm]++; depG.totals[wm]++; grand[wm]++ }
-    sdG.roles[role].total++; sdG.totals.total++; depG.totals.total++; grand.total++
-  }
-  const depts=Object.keys(groups).sort((a,b)=>a.localeCompare(b))
-  return {groups,depts,grand}
-}
-function renderGroupedBreakdown(){
-  const gd=state.pivot.grouped
-  if(!gd||!gd.depts.length) return '<div class="text-sm text-stone-400 py-10 text-center">No candidates match these filters.</div>'
-  const cols=GROUPED_COLS
-  const open=state.groupedOpen
-  const colDot=(c)=>{ const s=WORK_MODE_COLORS[c]||{bar:'#94A3B8'}; return '<span class="inline-block w-2 h-2 rounded-full mr-1.5 align-middle" style="background:'+s.bar+'"></span>' }
-  const head='<thead><tr class="text-[11px] font-semibold text-stone-500 uppercase tracking-wider border-b-2 border-stone-200"><th class="py-2.5 px-3 text-left">Department / Sub-department / Role</th>'+cols.map(c=>'<th class="py-2.5 px-3 text-center">'+colDot(c)+esc(c)+'</th>').join('')+'<th class="py-2.5 px-3 text-right text-stone-600">Total</th></tr></thead>'
-  const badge=(c,v)=>{ if(!v) return '<span class="text-stone-300 text-sm">·</span>'; const s=WORK_MODE_COLORS[c]||{bg:'#F5F5F4',color:'#57534E'}; return '<span class="inline-flex items-center justify-center min-w-[30px] px-2 py-0.5 rounded-md text-xs font-bold" style="background:'+s.bg+';color:'+s.color+'">'+v+'</span>' }
-  let body=''
-  gd.depts.forEach((dep,di)=>{
-    const depG=gd.groups[dep]
-    const depKey='d:'+dep
-    const depOpen=open[depKey]!==false
-    const subNames=Object.keys(depG.subDepts).sort((a,b)=>a.localeCompare(b))
-    const depChevron='<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-[10px]">'+(depOpen?'▾':'▸')+'</span>'
-    body+='<tr class="cursor-pointer transition-colors hover:bg-indigo-50/60" style="background:'+(di%2===0?'#FAFAF9':'#FFFFFF')+';border-top:1px solid #E7E5E4" data-action="grouped-toggle" data-key="'+esc(depKey)+'"><td class="py-2.5 px-3"><div class="flex items-center gap-2"><span class="w-1 self-stretch rounded-full bg-indigo-400" style="min-height:20px"></span>'+depChevron+'<span class="text-sm font-bold text-stone-900">'+esc(dep)+'</span><span class="text-[11px] text-stone-400 font-medium">('+subNames.length+' '+(subNames.length===1?'sub-dept':'sub-depts')+')</span></div></td>'+cols.map(c=>'<td class="py-2.5 px-3 text-center text-sm font-bold" style="color:'+(depG.totals[c]?(WORK_MODE_COLORS[c]||{}).color:'#D6D3D1')+'">'+(depG.totals[c]||0)+'</td>').join('')+'<td class="py-2.5 px-3 text-right text-sm font-extrabold text-stone-900">'+depG.totals.total+'</td></tr>'
-    if(depOpen) subNames.forEach(sd=>{
-      const sdG=depG.subDepts[sd]
-      const sdKey='sd:'+dep+'::'+sd
-      const sdOpen=open[sdKey]!==false
-      const roleNames=Object.keys(sdG.roles).sort((a,b)=>a.localeCompare(b))
-      const sdChevron='<span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-stone-200 text-stone-600 text-[9px]">'+(sdOpen?'▾':'▸')+'</span>'
-      body+='<tr class="cursor-pointer hover:bg-stone-100 transition-colors" style="border-top:1px solid #F0EFED;background:#FBFBFA" data-action="grouped-toggle" data-key="'+esc(sdKey)+'"><td class="py-2 pl-8 pr-3"><div class="flex items-center gap-2"><span class="text-stone-300">└</span>'+sdChevron+'<span class="text-sm font-semibold text-stone-800">'+esc(sd)+'</span><span class="text-[10px] text-stone-400">('+roleNames.length+' '+(roleNames.length===1?'role':'roles')+')</span></div></td>'+cols.map(c=>'<td class="py-2 px-3 text-center text-sm font-semibold" style="color:'+(sdG.totals[c]?(WORK_MODE_COLORS[c]||{}).color:'#D6D3D1')+'">'+(sdG.totals[c]||0)+'</td>').join('')+'<td class="py-2 px-3 text-right text-sm font-bold text-stone-900">'+sdG.totals.total+'</td></tr>'
-      if(sdOpen) roleNames.forEach(role=>{
-        const r=sdG.roles[role]
-        body+='<tr class="hover:bg-stone-50 transition-colors" style="border-top:1px solid #F5F5F4"><td class="py-2 pl-14 pr-3"><div class="flex items-center gap-2"><span class="text-stone-300">└</span><span class="text-sm text-stone-700">'+esc(role)+'</span></div></td>'+cols.map(c=>'<td class="py-2 px-3 text-center">'+badge(c,r[c])+'</td>').join('')+'<td class="py-2 px-3 text-right text-sm font-semibold text-stone-800">'+r.total+'</td></tr>'
-      })
-    })
-  })
-  const foot='<tr style="background:linear-gradient(90deg,#EEF2FF,#F5F3FF);border-top:2px solid #C7D2FE"><td class="py-3 px-3 text-sm font-bold text-stone-900">Grand total</td>'+cols.map(c=>'<td class="py-3 px-3 text-center text-sm font-extrabold" style="color:'+((WORK_MODE_COLORS[c]||{}).color||'#57534E')+'">'+(gd.grand[c]||0)+'</td>').join('')+'<td class="py-3 px-3 text-right text-base font-extrabold text-indigo-700">'+gd.grand.total+'</td></tr>'
-  return '<div class="overflow-x-auto border border-stone-200 rounded-xl shadow-sm"><table class="w-full border-collapse">'+head+'<tbody>'+body+foot+'</tbody></table></div>'
-}
-function renderGroupedSection(num){
-  num=num||8
-  const loading=state.reportsLoading
-  return '<section class="bg-white border border-stone-200 rounded-lg overflow-hidden mb-6"><header class="px-4 py-3 border-b border-stone-200"><h2 class="text-sm font-semibold text-stone-900">'+num+'. Department × Sub-department × Role, by work mode</h2><p class="text-xs text-stone-500 mt-0.5">Click a row to expand or collapse. Respects the filters and date range above.</p></header><div class="p-4">'+(loading?'<div class="text-sm text-stone-500 py-10 text-center">Building breakdown…</div>':renderGroupedBreakdown())+'</div></section>'
-}
-
 
 // ── window helpers for activity form ─────────────────────────────
 function updateSubStageOptions(group){ const sub=document.getElementById('act-stage-sub'); if(!sub) return; const subs=STAGE_SUBS[group]||(state.currentCandidate?STAGE_SUBS[state.currentCandidate.stage_group]||[]:[]); sub.innerHTML='<option value="">Keep current</option>'+subs.map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>').join(''); toggleActivityFormFields() }
 function toggleActivityFormFields(){
   const gS=document.getElementById('act-stage-group'), sS=document.getElementById('act-stage-sub')
   if(!gS||!sS) return
+  const sub=sS.value||(state.currentCandidate?.stage_sub||'')
   const iv=document.getElementById('interview-row'); if(iv) iv.style.display=(sS.value&&needsInterview(sS.value))?'':'none'
   const rj=document.getElementById('reject-row'); if(rj) rj.style.display=(sS.value&&isRejectSub(sS.value))?'':'none'
+  const noFollowup=isTerminalSub(sub)||state.currentCandidate?.is_archived
+  const fu=document.getElementById('followup-row'); if(fu) fu.style.display=noFollowup?'none':''
 }
 function toggleRejectOther(){ const s=document.getElementById('reject-sel'), o=document.getElementById('reject-other'); if(s&&o) o.style.display=s.value==='Other'?'':'none' }
 window.updateSubStageOptions=updateSubStageOptions
@@ -1042,7 +824,7 @@ window.toggleRejectOther=toggleRejectOther
 
 // ── handlers ─────────────────────────────────────────────────────
 let searchDebounce=null
-function msArray(key){ if(key==='rf_departments') return state.reportsFilters.departments; if(key==='rf_subDepartments') return state.reportsFilters.subDepartments; if(key==='rf_roles') return state.reportsFilters.roles; if(key==='rf_sources') return state.reportsFilters.sources; return state.filters[key] }
+function msArray(key){ if(key==='pivot_dept') return state.pivot.dept; if(key==='pivot_role') return state.pivot.role; if(key==='pivot_source') return state.pivot.source; return state.filters[key] }
 function attachHandlers(){
   const root=document.getElementById('app')
   root.onclick=(e)=>{
@@ -1052,7 +834,7 @@ function attachHandlers(){
     if(action==='login'){ e.preventDefault(); login(); return }
     if(action==='logout'){ e.preventDefault(); logout(); return }
     if(action==='open-candidate'){ window.location.hash='#/candidates/'+encodeURIComponent(id); return }
-    if(action==='clear-filters'){ state.filters={ search:'',stageGroup:'',stageSub:'',recruiterId:'',mineOnly:false,departments:[],subDepartments:[],roles:[],sources:[],workMode:'',noticePeriod:'',archived:'',createdFrom:'',createdTo:'' }; state.filterSearch={}; state.openFilter=null; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render); return }
+    if(action==='clear-filters'){ state.filters={ search:'',stageGroup:'',stageSub:'',recruiterId:'',mineOnly:false,departments:[],roles:[],sources:[],workMode:'',noticePeriod:'',archived:'',createdFrom:'',createdTo:'' }; state.filterSearch={}; state.openFilter=null; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render); return }
     if(action==='toggle-mine'){ state.filters.mineOnly=!state.filters.mineOnly; if(state.filters.mineOnly) state.filters.recruiterId=''; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render); return }
     if(action==='page-prev'){ state.candidatesPage=Math.max(1,state.candidatesPage-1); state.selectedIds.clear(); loadCandidates().then(render); return }
     if(action==='page-next'){ state.candidatesPage+=1; state.selectedIds.clear(); loadCandidates().then(render); return }
@@ -1068,15 +850,13 @@ function attachHandlers(){
     if(action==='bulk-delete-execute'){ bulkDelete(); return }
     if(action==='toggle-filter-dropdown'){ state.openFilter=(state.openFilter===el.dataset.key)?null:el.dataset.key; render(); return }
     if(action==='close-filter-dropdown'||action==='filter-dropdown-done'){ state.openFilter=null; render(); return }
-    if(action==='filter-dropdown-clear'){ const key=el.dataset.key; const arr=msArray(key); arr.length=0; state.filterSearch[key]=''; if(key.indexOf('rf_')===0){ loadReports() } else { state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) } return }
+    if(action==='filter-dropdown-clear'){ const key=el.dataset.key; const arr=msArray(key); arr.length=0; state.filterSearch[key]=''; if(key.indexOf('pivot_')===0){ loadPivotData() } else { state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) } return }
     if(action==='toggle-sidebar'){ state.sidebarOpen=!state.sidebarOpen; render(); return }
     if(action==='set-role'){ setUserRole(id,el.dataset.role); return }
     if(action==='set-na-filter'){ state.nextActionsFilter=el.dataset.filter; loadNextActions().then(render); return }
     if(action==='export-csv'){ exportCsv(); return }
+    if(action==='pivot-clear'){ const p=state.pivot; p.dept=[]; p.role=[]; p.source=[]; p.recruiterId=''; p.stageGroup=''; p.workMode=''; loadPivotData(); return }
     if(action==='pivot-export'){ exportPivot(); return }
-    if(action==='rf-toggle-mine'){ const f=state.reportsFilters; f.mineOnly=!f.mineOnly; if(f.mineOnly) f.recruiterId=''; loadReports(); return }
-    if(action==='rf-clear'){ state.reportsFilters={ search:'', stageGroup:'', stageSub:'', departments:[], subDepartments:[], roles:[], sources:[], workMode:'', noticePeriod:'', recruiterId:'', mineOnly:false, archived:'' }; loadReports(); return }
-    if(action==='grouped-toggle'){ const key=el.dataset.key; const isOpen=state.groupedOpen[key]!==false; state.groupedOpen[key]=!isOpen; render(); return }
     if(action==='open-resume'){ e.preventDefault(); openResume(el.dataset.path); return }
   }
   root.onsubmit=(e)=>{
@@ -1086,42 +866,35 @@ function attachHandlers(){
     if(action==='submit-activity') return submitActivity(el)
     if(action==='submit-new-candidate') return submitNewCandidate(el)
     if(action==='save-candidate-edits') return saveCandidateEdits(el)
-    if(action==='schedule-meet') return scheduleMeet(el)
   }
   root.oninput=(e)=>{
     if(state.view==='candidate-new'){ const form=e.target.closest('form[data-action="submit-new-candidate"]'); if(form) CAND_FIELDS.forEach(f=>{ const el2=form[f]; if(el2) state.newDraft[f]=el2.value }) }
     const el=e.target.closest('[data-action]'); if(!el) return
     if(el.dataset.action==='filter-dropdown-search'){ state.filterSearch[el.dataset.key]=el.value; render(); requestAnimationFrame(()=>{ const box=document.querySelector('[data-action="filter-dropdown-search"][data-key="'+el.dataset.key+'"]'); if(box){ box.focus(); box.setSelectionRange(box.value.length,box.value.length) } }) }
     if(el.dataset.action==='filter-search-input'){ state.filters.search=el.value; clearTimeout(searchDebounce); searchDebounce=setTimeout(()=>{ state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(()=>{ render(); requestAnimationFrame(()=>{ const inp=document.querySelector('[data-action="filter-search-input"]'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length,inp.value.length) } }) }) },400) }
-    if(el.dataset.action==='rf-search-input'){ state.reportsFilters.search=el.value; clearTimeout(searchDebounce); searchDebounce=setTimeout(()=>{ loadReports().then(()=>{ requestAnimationFrame(()=>{ const inp=document.querySelector('[data-action="rf-search-input"]'); if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length,inp.value.length) } }) }) },400) }
     if(el.dataset.action==='bulk-delete-input'){ const ok=el.value.trim()==='delete '+state.selectedIds.size; const btn=document.getElementById('bulk-delete-execute'); if(btn) btn.disabled=!ok }
-    if(el.dataset.action==='reports-from-change'){ state.reportsFrom=el.value; loadReports() }
-    if(el.dataset.action==='reports-to-change'){ state.reportsTo=el.value; loadReports() }
+    if(el.dataset.action==='reports-from-change'){ state.reportsFrom=el.value; loadReports().then(()=>{ render(); initReportsCharts() }); loadPivotData() }
+    if(el.dataset.action==='reports-to-change'){ state.reportsTo=el.value; loadReports().then(()=>{ render(); initReportsCharts() }); loadPivotData() }
   }
   root.onchange=(e)=>{
     if(state.view==='candidate-new'){ const form=e.target.closest('form[data-action="submit-new-candidate"]'); if(form) CAND_FIELDS.forEach(f=>{ const el2=form[f]; if(el2) state.newDraft[f]=el2.value }) }
     const el=e.target.closest('[data-action]'); if(!el) return
     const action=el.dataset.action
-    if(action==='filter-dropdown-toggle'){ const key=el.dataset.key, val=el.dataset.value; const arr=msArray(key); const idx=arr.indexOf(val); if(el.checked&&idx===-1) arr.push(val); else if(!el.checked&&idx!==-1) arr.splice(idx,1); if(key.indexOf('rf_')===0){ loadReports() } else { state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) } return }
+    if(action==='filter-dropdown-toggle'){ const key=el.dataset.key, val=el.dataset.value; const arr=msArray(key); const idx=arr.indexOf(val); if(el.checked&&idx===-1) arr.push(val); else if(!el.checked&&idx!==-1) arr.splice(idx,1); if(key.indexOf('pivot_')===0){ loadPivotData() } else { state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) } return }
     if(action==='filter-stage-group-change'){ state.filters.stageGroup=el.value; state.filters.stageSub=''; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
     if(action==='filter-stage-sub-change'){ state.filters.stageSub=el.value; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
     if(action==='filter-recruiter-change'){ state.filters.recruiterId=el.value; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
     if(action==='filter-workmode-change'){ state.filters.workMode=el.value; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
     if(action==='filter-notice-change'){ state.filters.noticePeriod=el.value; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
-    if(action==='filter-created-from-change'){ state.filters.createdFrom=el.value; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
-    if(action==='filter-created-to-change'){ state.filters.createdTo=el.value; state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) }
     if(action==='reassign-recruiter'){ reassignRecruiter(el.value) }
     if(action==='toggle-select'){ const cid=Number(el.dataset.id); if(el.checked) state.selectedIds.add(cid); else state.selectedIds.delete(cid); render() }
     if(action==='toggle-select-all'){ if(el.checked) state.candidates.forEach(c=>state.selectedIds.add(c.id)); else state.candidates.forEach(c=>state.selectedIds.delete(c.id)); render() }
     if(action==='bulk-reassign-change'){ const v=el.value; if(v==='') return; if(v==='UNASSIGN') bulkReassign(null); else bulkReassign(v) }
     if(action==='na-owner-change'){ state.nextActionsOwnerFilter=el.value; loadNextActions().then(render) }
-    if(action==='pivot-dim-change'){ state.pivot[el.dataset.axis]=el.value; computePivot(state.pivot.raw||[]); render(); if(state.view==='reports') initReportsCharts(); return }
-    if(action==='rf-stage-group-change'){ state.reportsFilters.stageGroup=el.value; state.reportsFilters.stageSub=''; loadReports(); return }
-    if(action==='rf-stage-sub-change'){ state.reportsFilters.stageSub=el.value; loadReports(); return }
-    if(action==='rf-workmode-change'){ state.reportsFilters.workMode=el.value; loadReports(); return }
-    if(action==='rf-notice-change'){ state.reportsFilters.noticePeriod=el.value; loadReports(); return }
-    if(action==='rf-recruiter-change'){ state.reportsFilters.recruiterId=el.value; loadReports(); return }
-    if(action==='rf-archived-change'){ state.reportsFilters.archived=el.value; loadReports(); return }
+    if(action==='pivot-dim-change'){ state.pivot[el.dataset.axis]=el.value; if(state.pivot.raw){ computePivot(state.pivot.raw); render(); if(state.view==='reports') initReportsCharts() } else loadPivotData(); return }
+    if(action==='pivot-recruiter-change'){ state.pivot.recruiterId=el.value; loadPivotData(); return }
+    if(action==='pivot-stage-change'){ state.pivot.stageGroup=el.value; loadPivotData(); return }
+    if(action==='pivot-workmode-change'){ state.pivot.workMode=el.value; loadPivotData(); return }
   }
 }
 
@@ -1137,26 +910,17 @@ async function handleRoute(){
   else if(hash.startsWith('/candidates/')){ const id=decodeURIComponent(hash.split('/')[2]); state.view='candidate-detail'; state.currentCandidate=null; state.activities=[]; state.auditLog=[]; state.interviews=[]; render(); await Promise.all([loadCandidate(id),loadActivities(id),loadInterviews(id)]); render() }
   else if(hash==='/next-actions'){ state.view='next-actions'; render(); await Promise.all([loadMyOverdueCount(),loadNextActions()]); render() }
   else if(hash==='/team'){ if(!isAdmin()){ window.location.hash='#/candidates'; return } state.view='team'; render(); await Promise.all([loadUsers(),loadCountsByRecruiter()]); render() }
-  else if(hash==='/reports'){ state.view='reports'; render(); await loadReports() }
+  else if(hash==='/reports'){ if(!isAdmin()){ window.location.hash='#/candidates'; return } state.view='reports'; render(); await loadReports(); render(); initReportsCharts(); loadPivotData() }
   else window.location.hash='#/candidates'
 }
 
 async function init(){
   render()
   const { data:{ session } }=await supabase.auth.getSession()
-  if(session){
-    state.session=session
-    state.providerToken=session.provider_token||sessionStorage.getItem('gcal_token')||null
-    if(session.provider_token) sessionStorage.setItem('gcal_token',session.provider_token)
-    await Promise.all([loadProfile(),loadUsers(),loadMyOverdueCount()])
-  }
+  if(session){ state.session=session; await Promise.all([loadProfile(),loadUsers(),loadMyOverdueCount()]) }
   supabase.auth.onAuthStateChange(async(event,session)=>{
-    if(event==='SIGNED_IN'){
-      state.session=session
-      if(session.provider_token){ state.providerToken=session.provider_token; sessionStorage.setItem('gcal_token',session.provider_token) }
-      await Promise.all([loadProfile(),loadUsers(),loadMyOverdueCount()]); handleRoute()
-    }
-    else if(event==='SIGNED_OUT'){ state.session=null; state.profile=null; state.providerToken=null; sessionStorage.removeItem('gcal_token'); state.view='login'; render() }
+    if(event==='SIGNED_IN'){ state.session=session; await Promise.all([loadProfile(),loadUsers(),loadMyOverdueCount()]); handleRoute() }
+    else if(event==='SIGNED_OUT'){ state.session=null; state.profile=null; state.view='login'; render() }
   })
   window.addEventListener('hashchange',handleRoute)
   handleRoute()
