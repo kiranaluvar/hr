@@ -46,7 +46,7 @@ window.supabase = supabase
 // ────────────────────────────────────────────────────────────────
 //  DROPDOWNS (from the HR sheet) — edit these arrays to add/remove options
 // ────────────────────────────────────────────────────────────────
-const STAGE_GROUPS = ['New','Screening','Assignment','Round 0','Round 1','Round 2','Round 3','Offer','Joined','Closed','Blacklist']
+const STAGE_GROUPS = ['New','Screening','Assignment','Round 0','Round 1','Round 2','Round 3','Final Select','Offered','Joined','Candidate Drop','Blacklist']
 const STAGE_SUBS = {
   'New':        ['Sourced'],
   'Screening':  ['Screen Select','Screen Reject'],
@@ -55,10 +55,11 @@ const STAGE_SUBS = {
   'Round 1':    ['R1 TBS','R1 Scheduled','R1 Rescheduled','R1 Hold','R1 Select','R1 Reject'],
   'Round 2':    ['R2 TBS','R2 Scheduled','R2 Rescheduled','R2 Hold','R2 Select','R2 Reject'],
   'Round 3':    ['R3 TBS','R3 Scheduled','R3 Rescheduled','R3 Hold','R3 Select','R3 Reject'],
-  'Offer':      ['Final Select'],
-  'Joined':     ['Joined'],
-  'Closed':     ['Candidate Drop'],
-  'Blacklist':  ['Blacklist'],
+  'Final Select':   ['Final Select'],
+  'Offered':        ['Offered'],
+  'Joined':         ['Joined'],
+  'Candidate Drop': ['Candidate Drop'],
+  'Blacklist':      ['Blacklist'],
 }
 const isRejectSub    = (sub) => /Reject$/.test(sub || '') || sub === 'Candidate Drop' || sub === 'Blacklist'
 const isTerminalSub  = (sub) => isRejectSub(sub) || sub === 'Final Select' || sub === 'Joined'
@@ -93,9 +94,10 @@ const STAGE_GROUP_STYLES = {
   'Round 1':    { bg:'#FFEDD5', color:'#9A3412', border:'#FED7AA' },
   'Round 2':    { bg:'#CCFBF1', color:'#115E59', border:'#99F6E4' },
   'Round 3':    { bg:'#CFFAFE', color:'#155E75', border:'#A5F3FC' },
-  'Offer':      { bg:'#D1FAE5', color:'#065F46', border:'#A7F3D0' },
+  'Final Select':   { bg:'#D1FAE5', color:'#065F46', border:'#A7F3D0' },
+  'Offered':        { bg:'#FEF9C3', color:'#854D0E', border:'#FEF08A' },
   'Joined':     { bg:'#BBF7D0', color:'#14532D', border:'#86EFAC' },
-  'Closed':     { bg:'#F5F5F4', color:'#57534E', border:'#E7E5E4' },
+  'Candidate Drop': { bg:'#F5F5F4', color:'#57534E', border:'#E7E5E4' },
   'Blacklist':  { bg:'#292524', color:'#FCA5A5', border:'#57534E' },
 }
 const ACTIVITY_TYPE_COLORS = {
@@ -245,16 +247,16 @@ function computeReportsClientSide(rows, rejectActs, selectActs, ivRows, overdueR
     candCreated[c.id]=c.created_at; candRecruiter[c.id]=c.recruiter_user_id
     const day=(c.created_at||'').slice(0,10); if(day) byDay[day]=(byDay[day]||0)+1
     if(!c.is_archived) funnelMap[c.stage_group]=(funnelMap[c.stage_group]||0)+1
-    const terminal=['Offer','Joined','Closed','Blacklist'].includes(c.stage_group)
+    const terminal=['Final Select','Offered','Joined','Candidate Drop','Blacklist'].includes(c.stage_group)
     if(!c.is_archived && !terminal) inProcess++
-    if(c.final_status==='Final Select'||c.final_status==='Joined') offers++
+    if(c.final_status==='Final Select'||c.final_status==='Offered'||c.final_status==='Joined') offers++
     if(c.final_status==='Rejected'||c.final_status==='Dropped'||c.final_status==='Blacklisted') rejected++
     const sd=c.source_detail||'—'
     if(!bySource[sd]) bySource[sd]={total:0,offers:0}
-    bySource[sd].total++; if(c.final_status==='Final Select'||c.final_status==='Joined') bySource[sd].offers++
+    bySource[sd].total++; if(c.final_status==='Final Select'||c.final_status==='Offered'||c.final_status==='Joined') bySource[sd].offers++
     if(!c.is_archived && !terminal){ const dep=c.department||'—'; byDept[dep]=(byDept[dep]||0)+1; const rl=c.role||'—'; byRole[rl]=(byRole[rl]||0)+1 }
     const rid=c.recruiter_user_id
-    if(rid){ if(!recruiterMap[rid]) recruiterMap[rid]={sourced:0,owned:0,offers:0,interviews:0,overdue:0}; recruiterMap[rid].sourced++; recruiterMap[rid].owned++; if(c.final_status==='Final Select'||c.final_status==='Joined') recruiterMap[rid].offers++ }
+    if(rid){ if(!recruiterMap[rid]) recruiterMap[rid]={sourced:0,owned:0,offers:0,interviews:0,overdue:0}; recruiterMap[rid].sourced++; recruiterMap[rid].owned++; if(c.final_status==='Final Select'||c.final_status==='Offered'||c.final_status==='Joined') recruiterMap[rid].offers++ }
   })
   const reasonMap={}
   rejectActs.forEach(a=>{ const k=a.reject_reason==='Other'?(a.reject_reason_other||'Other'):a.reject_reason; reasonMap[k]=(reasonMap[k]||0)+1 })
@@ -385,6 +387,7 @@ async function submitActivity(form){
     if(newGroup) patch.stage_group=newGroup
     if(newSub) patch.stage_sub=newSub
     if(newSub==='Final Select') patch.final_status='Final Select'
+    else if(newSub==='Offered') patch.final_status='Offered'
     else if(newSub==='Joined') patch.final_status='Joined'
     else if(newSub==='Candidate Drop') patch.final_status='Dropped'
     else if(newSub==='Blacklist') patch.final_status='Blacklisted'
@@ -400,7 +403,7 @@ async function submitActivity(form){
   await Promise.all([loadCandidate(c.id),loadActivities(c.id),loadInterviews(c.id),loadMyOverdueCount()])
   state.saving=false
   flash('ok', scheduledFor?'Activity logged · next action scheduled':'Activity logged')
-  if(newSub==='Final Select'||newSub==='Joined') celebrate()
+  if(newSub==='Final Select'||newSub==='Offered'||newSub==='Joined') celebrate()
   render()
 }
 
