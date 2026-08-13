@@ -46,7 +46,7 @@ window.supabase = supabase
 // ────────────────────────────────────────────────────────────────
 //  DROPDOWNS (from the HR sheet) — edit these arrays to add/remove options
 // ────────────────────────────────────────────────────────────────
-const STAGE_GROUPS = ['New','Screening','Assignment','Round 0','Round 1','Round 2','Round 3','Final Select','Offered','Joined','Candidate Drop','Blacklist']
+const STAGE_GROUPS = ['New','Screening','Assignment','Round 0','Round 1','Round 2','Round 3','Final Select','Offered','Joined','DNP / Unresponsive','Candidate Drop','Blacklist']
 const STAGE_SUBS = {
   'New':        ['Sourced'],
   'Screening':  ['Screen Select','Screen Reject'],
@@ -55,11 +55,12 @@ const STAGE_SUBS = {
   'Round 1':    ['R1 TBS','R1 Scheduled','R1 Rescheduled','R1 Hold','R1 Select','R1 Reject'],
   'Round 2':    ['R2 TBS','R2 Scheduled','R2 Rescheduled','R2 Hold','R2 Select','R2 Reject'],
   'Round 3':    ['R3 TBS','R3 Scheduled','R3 Rescheduled','R3 Hold','R3 Select','R3 Reject'],
-  'Final Select':   ['Final Select'],
-  'Offered':        ['Offered'],
-  'Joined':         ['Joined'],
-  'Candidate Drop': ['Candidate Drop'],
-  'Blacklist':      ['Blacklist'],
+  'Final Select':       ['Final Select'],
+  'Offered':            ['Offered'],
+  'Joined':             ['Joined'],
+  'DNP / Unresponsive': ['DNP / Unresponsive'],
+  'Candidate Drop':     ['Candidate Drop'],
+  'Blacklist':          ['Blacklist'],
 }
 const isRejectSub    = (sub) => /Reject$/.test(sub || '') || sub === 'Candidate Drop' || sub === 'Blacklist'
 const isTerminalSub  = (sub) => isRejectSub(sub) || sub === 'Final Select' || sub === 'Joined'
@@ -97,6 +98,7 @@ const STAGE_GROUP_STYLES = {
   'Final Select':   { bg:'#D1FAE5', color:'#065F46', border:'#A7F3D0' },
   'Offered':        { bg:'#FEF9C3', color:'#854D0E', border:'#FEF08A' },
   'Joined':     { bg:'#BBF7D0', color:'#14532D', border:'#86EFAC' },
+  'DNP / Unresponsive': { bg:'#FFF7ED', color:'#9A3412', border:'#FED7AA' },
   'Candidate Drop': { bg:'#F5F5F4', color:'#57534E', border:'#E7E5E4' },
   'Blacklist':  { bg:'#292524', color:'#FCA5A5', border:'#57534E' },
 }
@@ -619,7 +621,7 @@ function renderActivityForm(c){
     + '<div><label class="block text-xs font-medium text-stone-600 mb-1">Type</label><select name="activity_type" required class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring">'+ACTIVITY_TYPES.map(t=>'<option>'+esc(t)+'</option>').join('')+'</select></div>'
     + '<div><label class="block text-xs font-medium text-stone-600 mb-1">Outcome <span class="text-stone-400 font-normal">(short)</span></label><input type="text" name="outcome" placeholder="e.g., Cleared R1, strong on system design" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div>'
     + '<div><label class="block text-xs font-medium text-stone-600 mb-1">Notes</label><textarea name="notes" rows="2" placeholder="Details, feedback, next steps…" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring resize-none"></textarea></div>'
-    + '<div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-medium text-stone-600 mb-1">Move stage to</label><select name="new_stage_group" id="act-stage-group" onchange="updateSubStageOptions(this.value)" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Keep current</option>'+groupOpts+'</select></div><div><label class="block text-xs font-medium text-stone-600 mb-1">Sub-stage</label><select name="new_stage_sub" id="act-stage-sub" onchange="toggleActivityFormFields()" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Keep current</option>'+subOpts+'</select></div></div>'
+    + '<div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-medium text-stone-600 mb-1">Current Status</label><select name="new_stage_group" id="act-stage-group" onchange="updateSubStageOptions(this.value)" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Keep current</option>'+groupOpts+'</select></div><div><label class="block text-xs font-medium text-stone-600 mb-1">Sub-stage</label><select name="new_stage_sub" id="act-stage-sub" onchange="toggleActivityFormFields()" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">Keep current</option>'+subOpts+'</select></div></div>'
     + '<div id="interview-row" style="display:none" class="space-y-2"><label class="block text-xs font-medium text-stone-600">Interview slot <span class="text-rose-500">*</span></label><div class="grid grid-cols-2 gap-2"><input type="date" name="interview_date" class="text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"><input type="time" name="interview_time" class="text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div><input type="text" name="interviewer" placeholder="Interviewer / panel (optional)" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div>'
     + '<div id="reject-row" style="display:none"><label class="block text-xs font-medium text-stone-600 mb-1">Reason <span class="text-rose-500">*</span></label><select name="reject_reason" id="reject-sel" onchange="toggleRejectOther()" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md bg-white focus-ring"><option value="">— Select reason —</option>'+REJECT_REASONS.map(r=>'<option>'+esc(r)+'</option>').join('')+'</select><input type="text" name="reject_reason_other" id="reject-other" placeholder="Specify…" style="display:none" class="w-full mt-2 text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring"></div>'
     + '<div id="followup-row"><label class="block text-xs font-medium text-stone-600 mb-1">Next action date <span class="text-stone-400 font-normal">(optional)</span></label><input type="date" name="scheduled_for" class="w-full text-sm px-2.5 py-1.5 border border-stone-200 rounded-md focus-ring" min="'+todayYMD()+'"></div>'
