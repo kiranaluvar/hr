@@ -150,7 +150,7 @@ const state = {
   sidebarOpen: false, chartInstances: {},
   providerToken: null, savingMeet: false,
   pivot: { rows:'recruiter', cols:'stage_group', raw:null, matrix:null, rowKeys:[], colKeys:[], rowTotals:{}, colTotals:{}, grand:0, maxCell:0, grouped:null },
-  groupedOpen: {},
+  groupedOpen: {}, drill: null,
 }
 
 // ── helpers ──────────────────────────────────────────────────────
@@ -524,7 +524,7 @@ function renderShell(){
   const content=renderCurrentView()
   const flashHtml=state.flash?'<div class="fixed top-6 right-6 z-50 px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium '+(state.flash.kind==='ok'?'bg-emerald-600 text-white':'bg-rose-600 text-white')+'">'+esc(state.flash.msg)+'</div>':''
   const backdrop=state.sidebarOpen?'<div data-action="toggle-sidebar" class="fixed inset-0 bg-black/40 z-40 lg:hidden"></div>':''
-  return flashHtml+backdrop+'<div class="min-h-screen flex">'+renderSidebar()+'<div class="flex-1 lg:ml-60 flex flex-col"><header class="border-b border-stone-200 bg-white"><div class="px-4 lg:px-8 py-3 flex items-center justify-between max-w-[1400px] w-full"><div class="flex items-center gap-3 min-w-0"><button data-action="toggle-sidebar" class="lg:hidden text-stone-700" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button><div class="text-sm text-stone-500 truncate">'+renderBreadcrumb()+'</div></div><div class="flex items-center gap-3 shrink-0"><a href="#/candidates/new" class="text-sm bg-stone-900 hover:bg-stone-800 text-white px-3 py-1.5 rounded-md font-medium transition">+ Add candidate</a></div></div></header><main class="flex-1 px-4 lg:px-8 py-6 max-w-[1400px] w-full">'+content+'</main></div></div>'
+  return flashHtml+backdrop+renderDrillModal()+'<div class="min-h-screen flex">'+renderSidebar()+'<div class="flex-1 lg:ml-60 flex flex-col"><header class="border-b border-stone-200 bg-white"><div class="px-4 lg:px-8 py-3 flex items-center justify-between max-w-[1400px] w-full"><div class="flex items-center gap-3 min-w-0"><button data-action="toggle-sidebar" class="lg:hidden text-stone-700" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button><div class="text-sm text-stone-500 truncate">'+renderBreadcrumb()+'</div></div><div class="flex items-center gap-3 shrink-0"><a href="#/candidates/new" class="text-sm bg-stone-900 hover:bg-stone-800 text-white px-3 py-1.5 rounded-md font-medium transition">+ Add candidate</a></div></div></header><main class="flex-1 px-4 lg:px-8 py-6 max-w-[1400px] w-full">'+content+'</main></div></div>'
 }
 function renderSidebar(){
   const hash=window.location.hash.slice(1)||'/'
@@ -1040,6 +1040,29 @@ function computeGroupedBreakdown(rows){
   const depts=Object.keys(groups).sort((a,b)=>a.localeCompare(b))
   return {groups,depts,grand}
 }
+async function openGroupedDrill(ds){
+  const match=(v,k)=>k===undefined||(v||'—')===k
+  const rows=(state.pivot.raw||[]).filter(c=>match(c.department,ds.dep)&&match(c.sub_department,ds.sd)&&match(c.role,ds.rl)&&(!ds.wm||c.work_mode===ds.wm))
+  const title=[ds.dep,ds.sd,ds.rl].filter(v=>v!==undefined).join(' › ')+' · '+(ds.wm||'All work modes')
+  state.drill={title,loading:true,rows:[],count:rows.length}
+  renderKeepCharts()
+  const ids=rows.map(r=>r.id), out=[]
+  for(let i=0;i<ids.length;i+=200){
+    const {data,error}=await supabase.from('candidates').select('id,candidate_name,contact_no,email,stage_group,stage_sub,recruiter_user_id,work_mode,created_at').in('id',ids.slice(i,i+200))
+    if(error){ state.drill=null; flash('err',error.message); return }
+    out.push(...(data||[]))
+  }
+  out.sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))
+  if(state.drill){ state.drill.rows=out; state.drill.loading=false; renderKeepCharts() }
+}
+function renderKeepCharts(){ render(); if(state.view==='reports') initReportsCharts() }
+function renderDrillModal(){
+  const d=state.drill; if(!d) return ''
+  const body=d.loading?'<div class="py-12 text-center text-sm text-stone-500">Loading '+d.count+' candidate'+(d.count===1?'':'s')+'…</div>'
+    :d.rows.length===0?'<div class="py-12 text-center text-sm text-stone-400">No candidates found.</div>'
+    :'<table class="w-full"><thead class="bg-stone-50 border-b border-stone-200 sticky top-0"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="py-2 px-3">Candidate</th><th class="py-2 px-3">Contact</th><th class="py-2 px-3">Stage</th><th class="py-2 px-3">Recruiter</th><th class="py-2 px-3">Sourced</th></tr></thead><tbody>'+d.rows.map(c=>'<tr class="border-b border-stone-100 hover:bg-stone-50"><td class="py-2 px-3"><a href="#/candidates/'+esc(c.id)+'" class="text-sm font-medium text-indigo-600 hover:underline">'+esc(c.candidate_name||'—')+'</a><div class="text-xs text-stone-400">'+esc(c.email||'')+'</div></td><td class="py-2 px-3 text-sm text-stone-700">'+esc(c.contact_no||'—')+'</td><td class="py-2 px-3">'+stagePill(c.stage_group,c.stage_sub)+'</td><td class="py-2 px-3">'+avatarWithName(c.recruiter_user_id)+'</td><td class="py-2 px-3 text-xs text-stone-500 whitespace-nowrap">'+esc(fmtDateTime(c.created_at))+'</td></tr>').join('')+'</tbody></table>'
+  return '<div class="fixed inset-0 bg-black/40 z-[60] flex items-center justify-center px-4" data-action="close-drill"><div data-action="drill-noop" class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[80vh] flex flex-col"><div class="px-4 py-3 border-b border-stone-200 flex items-start justify-between gap-3"><div><h3 class="text-sm font-semibold text-stone-900">'+esc(d.title)+'</h3><p class="text-xs text-stone-500 mt-0.5">'+d.count+' candidate'+(d.count===1?'':'s')+'</p></div><button data-action="close-drill" class="text-stone-400 hover:text-stone-700 text-lg leading-none">✕</button></div><div class="overflow-auto">'+body+'</div></div></div>'
+}
 function renderGroupedBreakdown(){
   const gd=state.pivot.grouped
   if(!gd||!gd.depts.length) return '<div class="text-sm text-stone-400 py-10 text-center">No candidates match these filters.</div>'
@@ -1048,6 +1071,8 @@ function renderGroupedBreakdown(){
   const colDot=(c)=>{ const s=WORK_MODE_COLORS[c]||{bar:'#94A3B8'}; return '<span class="inline-block w-2 h-2 rounded-full mr-1.5 align-middle" style="background:'+s.bar+'"></span>' }
   const head='<thead><tr class="text-[11px] font-semibold text-stone-500 uppercase tracking-wider border-b-2 border-stone-200"><th class="py-2.5 px-3 text-left">Department / Sub-department / Role</th>'+cols.map(c=>'<th class="py-2.5 px-3 text-center">'+colDot(c)+esc(c)+'</th>').join('')+'<th class="py-2.5 px-3 text-right text-stone-600">Total</th></tr></thead>'
   const badge=(c,v)=>{ if(!v) return '<span class="text-stone-300 text-sm">·</span>'; const s=WORK_MODE_COLORS[c]||{bg:'#F5F5F4',color:'#57534E'}; return '<span class="inline-flex items-center justify-center min-w-[30px] px-2 py-0.5 rounded-md text-xs font-bold" style="background:'+s.bg+';color:'+s.color+'">'+v+'</span>' }
+  const dAttr=(dep,sd,rl,wm)=>' data-action="grouped-drill" data-dep="'+esc(dep)+'"'+(sd!==null?' data-sd="'+esc(sd)+'"':'')+(rl!==null?' data-rl="'+esc(rl)+'"':'')+(wm?' data-wm="'+wm+'"':'')
+  const cnt=(n,attrs,cls,style)=>n?'<td class="'+cls+' cursor-pointer hover:underline"'+attrs+' style="'+style+'" title="View candidates">'+n+'</td>':'<td class="'+cls+'" style="'+style+'">'+n+'</td>'
   let body=''
   gd.depts.forEach((dep,di)=>{
     const depG=gd.groups[dep]
@@ -1055,17 +1080,17 @@ function renderGroupedBreakdown(){
     const depOpen=open[depKey]!==false
     const subNames=Object.keys(depG.subDepts).sort((a,b)=>a.localeCompare(b))
     const depChevron='<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-[10px]">'+(depOpen?'▾':'▸')+'</span>'
-    body+='<tr class="cursor-pointer transition-colors hover:bg-indigo-50/60" style="background:'+(di%2===0?'#FAFAF9':'#FFFFFF')+';border-top:1px solid #E7E5E4" data-action="grouped-toggle" data-key="'+esc(depKey)+'"><td class="py-2.5 px-3"><div class="flex items-center gap-2"><span class="w-1 self-stretch rounded-full bg-indigo-400" style="min-height:20px"></span>'+depChevron+'<span class="text-sm font-bold text-stone-900">'+esc(dep)+'</span><span class="text-[11px] text-stone-400 font-medium">('+subNames.length+' '+(subNames.length===1?'sub-dept':'sub-depts')+')</span></div></td>'+cols.map(c=>'<td class="py-2.5 px-3 text-center text-sm font-bold" style="color:'+(depG.totals[c]?(WORK_MODE_COLORS[c]||{}).color:'#D6D3D1')+'">'+(depG.totals[c]||0)+'</td>').join('')+'<td class="py-2.5 px-3 text-right text-sm font-extrabold text-stone-900">'+depG.totals.total+'</td></tr>'
+    body+='<tr class="cursor-pointer transition-colors hover:bg-indigo-50/60" style="background:'+(di%2===0?'#FAFAF9':'#FFFFFF')+';border-top:1px solid #E7E5E4" data-action="grouped-toggle" data-key="'+esc(depKey)+'"><td class="py-2.5 px-3"><div class="flex items-center gap-2"><span class="w-1 self-stretch rounded-full bg-indigo-400" style="min-height:20px"></span>'+depChevron+'<span class="text-sm font-bold text-stone-900">'+esc(dep)+'</span><span class="text-[11px] text-stone-400 font-medium">('+subNames.length+' '+(subNames.length===1?'sub-dept':'sub-depts')+')</span></div></td>'+cols.map(c=>cnt(depG.totals[c]||0,dAttr(dep,null,null,c),'py-2.5 px-3 text-center text-sm font-bold','color:'+(depG.totals[c]?(WORK_MODE_COLORS[c]||{}).color:'#D6D3D1'))).join('')+cnt(depG.totals.total,dAttr(dep,null,null,''),'py-2.5 px-3 text-right text-sm font-extrabold text-stone-900','')+'</tr>'
     if(depOpen) subNames.forEach(sd=>{
       const sdG=depG.subDepts[sd]
       const sdKey='sd:'+dep+'::'+sd
       const sdOpen=open[sdKey]!==false
       const roleNames=Object.keys(sdG.roles).sort((a,b)=>a.localeCompare(b))
       const sdChevron='<span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-stone-200 text-stone-600 text-[9px]">'+(sdOpen?'▾':'▸')+'</span>'
-      body+='<tr class="cursor-pointer hover:bg-stone-100 transition-colors" style="border-top:1px solid #F0EFED;background:#FBFBFA" data-action="grouped-toggle" data-key="'+esc(sdKey)+'"><td class="py-2 pl-8 pr-3"><div class="flex items-center gap-2"><span class="text-stone-300">└</span>'+sdChevron+'<span class="text-sm font-semibold text-stone-800">'+esc(sd)+'</span><span class="text-[10px] text-stone-400">('+roleNames.length+' '+(roleNames.length===1?'role':'roles')+')</span></div></td>'+cols.map(c=>'<td class="py-2 px-3 text-center text-sm font-semibold" style="color:'+(sdG.totals[c]?(WORK_MODE_COLORS[c]||{}).color:'#D6D3D1')+'">'+(sdG.totals[c]||0)+'</td>').join('')+'<td class="py-2 px-3 text-right text-sm font-bold text-stone-900">'+sdG.totals.total+'</td></tr>'
+      body+='<tr class="cursor-pointer hover:bg-stone-100 transition-colors" style="border-top:1px solid #F0EFED;background:#FBFBFA" data-action="grouped-toggle" data-key="'+esc(sdKey)+'"><td class="py-2 pl-8 pr-3"><div class="flex items-center gap-2"><span class="text-stone-300">└</span>'+sdChevron+'<span class="text-sm font-semibold text-stone-800">'+esc(sd)+'</span><span class="text-[10px] text-stone-400">('+roleNames.length+' '+(roleNames.length===1?'role':'roles')+')</span></div></td>'+cols.map(c=>cnt(sdG.totals[c]||0,dAttr(dep,sd,null,c),'py-2 px-3 text-center text-sm font-semibold','color:'+(sdG.totals[c]?(WORK_MODE_COLORS[c]||{}).color:'#D6D3D1'))).join('')+cnt(sdG.totals.total,dAttr(dep,sd,null,''),'py-2 px-3 text-right text-sm font-bold text-stone-900','')+'</tr>'
       if(sdOpen) roleNames.forEach(role=>{
         const r=sdG.roles[role]
-        body+='<tr class="hover:bg-stone-50 transition-colors" style="border-top:1px solid #F5F5F4"><td class="py-2 pl-14 pr-3"><div class="flex items-center gap-2"><span class="text-stone-300">└</span><span class="text-sm text-stone-700">'+esc(role)+'</span></div></td>'+cols.map(c=>'<td class="py-2 px-3 text-center">'+badge(c,r[c])+'</td>').join('')+'<td class="py-2 px-3 text-right text-sm font-semibold text-stone-800">'+r.total+'</td></tr>'
+        body+='<tr class="hover:bg-stone-50 transition-colors" style="border-top:1px solid #F5F5F4"><td class="py-2 pl-14 pr-3"><div class="flex items-center gap-2"><span class="text-stone-300">└</span><span class="text-sm text-stone-700">'+esc(role)+'</span></div></td>'+cols.map(c=>cnt(badge(c,r[c]),r[c]?dAttr(dep,sd,role,c):'','py-2 px-3 text-center','').replace(/cursor-pointer hover:underline/,r[c]?'cursor-pointer':'')).join('')+cnt(r.total,dAttr(dep,sd,role,''),'py-2 px-3 text-right text-sm font-semibold text-stone-800','')+'</tr>'
       })
     })
   })
@@ -1129,7 +1154,10 @@ function attachHandlers(){
     if(action==='pivot-export'){ exportPivot(); return }
     if(action==='rf-toggle-mine'){ const f=state.reportsFilters; f.mineOnly=!f.mineOnly; if(f.mineOnly) f.recruiterId=''; loadReports(); return }
     if(action==='rf-clear'){ state.reportsFilters={ search:'', stageGroup:'', stageSub:'', departments:[], subDepartments:[], roles:[], sources:[], workMode:'', noticePeriod:'', recruiterId:'', mineOnly:false, archived:'' }; loadReports(); return }
-    if(action==='grouped-toggle'){ const key=el.dataset.key; const isOpen=state.groupedOpen[key]!==false; state.groupedOpen[key]=!isOpen; render(); return }
+    if(action==='grouped-toggle'){ const key=el.dataset.key; const isOpen=state.groupedOpen[key]!==false; state.groupedOpen[key]=!isOpen; renderKeepCharts(); return }
+    if(action==='grouped-drill'){ openGroupedDrill(el.dataset); return }
+    if(action==='close-drill'){ state.drill=null; renderKeepCharts(); return }
+    if(action==='drill-noop') return
     if(action==='open-resume'){ e.preventDefault(); openResume(el.dataset.path); return }
   }
   root.onsubmit=(e)=>{
@@ -1181,7 +1209,7 @@ function attachHandlers(){
 
 // ── routing ──────────────────────────────────────────────────────
 async function handleRoute(){
-  state.sidebarOpen=false
+  state.sidebarOpen=false; state.drill=null
   if(!state.session){ state.view='login'; render(); return }
   destroyCharts()
   const hash=window.location.hash.slice(1)||'/'
