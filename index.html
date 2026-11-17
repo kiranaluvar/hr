@@ -494,6 +494,18 @@ async function setArchived(){ const reason=document.getElementById('archive-reas
 async function clearArchived(){ const {error}=await supabase.from('candidates').update({is_archived:false,archived_reason:null,archived_by:null,archived_at:null}).eq('id',state.currentCandidate.id); if(error){ flash('err',error.message); return } await loadCandidate(state.currentCandidate.id); flash('ok','Candidate restored'); render() }
 async function bulkReassign(newId){ if(!isAdmin()) return; const ids=Array.from(state.selectedIds); if(!ids.length) return; const patch={recruiter_user_id:newId||null}; if(newId) patch.created_at=new Date().toISOString(); const {error}=await supabase.from('candidates').update(patch).in('id',ids); if(error){ flash('err',error.message); return } flash('ok','Reassigned '+ids.length+' candidate'+(ids.length===1?'':'s')); state.selectedIds.clear(); state.bulkPanel=null; await Promise.all([loadCandidates(),loadCountsByRecruiter()]); render() }
 async function bulkDelete(){ if(!isAdmin()) return; const ids=Array.from(state.selectedIds); if(!ids.length) return; const {error}=await supabase.from('candidates').delete().in('id',ids); if(error){ flash('err',error.message); return } flash('ok','Deleted '+ids.length+' candidate'+(ids.length===1?'':'s')); state.selectedIds.clear(); state.bulkPanel=null; await Promise.all([loadCandidates(),loadCountsByRecruiter()]); render() }
+async function removeUser(userId){
+  if(!isAdmin()) return
+  if(userId===state.session.user.id){ flash('err','You cannot remove yourself.'); return }
+  const u=userById(userId); const n=state.countsByRecruiter[userId]||0
+  const msg='Remove '+(u?.full_name||u?.email||'this member')+' from the team?'+(n?'\n\nTheir '+n+' candidate'+(n===1?'':'s')+' will become Unassigned.':'')
+  if(!confirm(msg)) return
+  if(n){ const {error:e1}=await supabase.from('candidates').update({recruiter_user_id:null}).eq('recruiter_user_id',userId); if(e1){ flash('err',e1.message); return } }
+  const {data,error}=await supabase.from('user_profiles').delete().eq('user_id',userId).select('user_id')
+  if(error){ flash('err','Could not remove: '+error.message); return }
+  if(!data||!data.length){ flash('err','Not removed — the database has no delete permission for admins on user_profiles yet (run user_profiles_delete_policy.sql in Supabase).'); return }
+  flash('ok','Member removed'); await Promise.all([loadUsers(),loadCountsByRecruiter()]); render()
+}
 async function setUserRole(userId,newRole){ if(!isAdmin()) return; if(userId===state.session.user.id){ flash('err','You cannot change your own role.'); return } const {error}=await supabase.from('user_profiles').update({role:newRole}).eq('user_id',userId); if(error){ flash('err',error.message); return } flash('ok','Role updated'); await loadUsers(); render() }
 
 async function exportCsv(){
@@ -863,7 +875,7 @@ function renderTeam(){
     const isSelf=u.user_id===state.session.user.id
     const roleStyle=u.role==='admin'?'background:#E0E7FF;color:#3730A3;border-color:#C7D2FE':'background:#F5F5F4;color:#44403C;border-color:#E7E5E4'
     const action=isSelf?'<span class="text-xs text-stone-400">—</span>':(u.role==='recruiter'?'<button data-action="set-role" data-id="'+esc(u.user_id)+'" data-role="admin" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium border border-indigo-200 hover:border-indigo-400 hover:bg-indigo-50 px-2.5 py-1 rounded-md transition">Promote to admin</button>':'<button data-action="set-role" data-id="'+esc(u.user_id)+'" data-role="recruiter" class="text-xs text-stone-600 hover:text-stone-900 font-medium border border-stone-200 hover:border-stone-400 hover:bg-stone-50 px-2.5 py-1 rounded-md transition">Demote to recruiter</button>')
-    return '<tr class="border-b border-stone-100 hover:bg-stone-50"><td class="py-3 px-4"><div class="flex items-center gap-3">'+avatar(u.user_id,'md')+'<div class="min-w-0"><div class="font-medium text-stone-900 text-sm">'+esc(u.full_name||'—')+(isSelf?' <span class="text-xs text-stone-400 font-normal">(you)</span>':'')+'</div><div class="text-xs text-stone-500">'+esc(u.email)+'</div></div></div></td><td class="py-3 px-4"><span class="stage-pill" style="'+roleStyle+'">'+esc(u.role)+'</span></td><td class="py-3 px-4 text-sm text-stone-700">'+count+' '+(count===1?'candidate':'candidates')+'</td><td class="py-3 px-4 text-right">'+action+'</td></tr>'
+    return '<tr class="border-b border-stone-100 hover:bg-stone-50"><td class="py-3 px-4"><div class="flex items-center gap-3">'+avatar(u.user_id,'md')+'<div class="min-w-0"><div class="font-medium text-stone-900 text-sm">'+esc(u.full_name||'—')+(isSelf?' <span class="text-xs text-stone-400 font-normal">(you)</span>':'')+'</div><div class="text-xs text-stone-500">'+esc(u.email)+'</div></div></div></td><td class="py-3 px-4"><span class="stage-pill" style="'+roleStyle+'">'+esc(u.role)+'</span></td><td class="py-3 px-4 text-sm text-stone-700">'+count+' '+(count===1?'candidate':'candidates')+'</td><td class="py-3 px-4 text-right"><div class="flex items-center justify-end gap-2">'+action+(isSelf?'':'<button data-action="remove-user" data-id="'+esc(u.user_id)+'" class="text-xs text-rose-600 hover:text-rose-800 font-medium border border-rose-200 hover:border-rose-400 hover:bg-rose-50 px-2.5 py-1 rounded-md transition">Remove</button>')+'</div></td></tr>'
   }).join('')
   return '<div class="mb-5"><h1 class="text-xl font-semibold tracking-tight text-stone-900">Team</h1><p class="text-sm text-stone-500 mt-0.5">'+state.users.length+' '+(state.users.length===1?'member':'members')+'. New members appear here automatically after first sign-in.</p></div><div class="bg-white border border-stone-200 rounded-lg overflow-hidden"><table class="w-full"><thead class="bg-stone-50 border-b border-stone-200"><tr class="text-left text-xs font-medium text-stone-500 uppercase tracking-wider"><th class="py-2.5 px-4">Member</th><th class="py-2.5 px-4">Role</th><th class="py-2.5 px-4">Owns</th><th class="py-2.5 px-4 text-right"></th></tr></thead><tbody>'+rows+'</tbody></table></div>'
 }
@@ -1148,6 +1160,7 @@ function attachHandlers(){
     if(action==='filter-dropdown-clear'){ const key=el.dataset.key; const arr=msArray(key); arr.length=0; state.filterSearch[key]=''; if(key.indexOf('rf_')===0){ loadReports() } else { state.candidatesPage=1; state.selectedIds.clear(); loadCandidates().then(render) } return }
     if(action==='toggle-sidebar'){ state.sidebarOpen=!state.sidebarOpen; render(); return }
     if(action==='set-role'){ setUserRole(id,el.dataset.role); return }
+    if(action==='remove-user'){ removeUser(id); return }
     if(action==='remove-option'){ if(confirm('Remove "'+el.dataset.value+'" from this list?')) removeDropdownOption(el.dataset.category,el.dataset.value); return }
     if(action==='set-na-filter'){ state.nextActionsFilter=el.dataset.filter; loadNextActions().then(render); return }
     if(action==='export-csv'){ exportCsv(); return }
